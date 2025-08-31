@@ -22,7 +22,6 @@ public class Cliente extends Usuario {
     }
     
 
-
     // Métodos, baseando-se nos Casos de Uso presentes na seguinte documentação: https://docs.google.com/document/d/1-LHY0OPil94ANtAvhWR81OLN35Z_yMhvjKoVWOqoHic/edit?tab=t.0
 
     
