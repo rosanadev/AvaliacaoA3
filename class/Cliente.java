@@ -4,10 +4,10 @@ public class Cliente extends Usuario {
     
     private String categoria; //Tipos de clientes, esse campo pode ser tabelado no banco de dados 
 
-    public Cliente(Integer codigo, String nome, String cpf, Date data_nascimento, String email, String senha,
+    public Cliente(Integer codigo, String nome, String cpf, Date dataNascimento, String email, String senha,
             String telefone, String cep, String complemento, String bairro, String cidade, String estado,
             String categoria) {
-        super(codigo, nome, cpf, data_nascimento, email, senha, telefone, cep, complemento, bairro, cidade, estado);
+        super(codigo, nome, cpf, dataNascimento, email, senha, telefone, cep, complemento, bairro, cidade, estado);
         this.categoria = categoria;
     }
 

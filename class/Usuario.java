@@ -4,7 +4,7 @@ abstract class Usuario {
     private Integer codigo; // Chave primária para o banco de dados, incrementado automaticamente
     private String nome;
     private String cpf;
-    private Date data_nascimento;
+    private Date dataNascimento;
     private String email;
     private String senha;
     private String telefone;
@@ -15,12 +15,12 @@ abstract class Usuario {
     private String estado;
 
 
-    public Usuario(Integer codigo, String nome, String cpf, Date data_nascimento, String email, String senha, String telefone, String cep,
+    public Usuario(Integer codigo, String nome, String cpf, Date dataNascimento, String email, String senha, String telefone, String cep,
             String complemento, String bairro, String cidade, String estado) {
         this.codigo = codigo;
         this.nome = nome;
         this.cpf = cpf;
-        this.data_nascimento = data_nascimento;
+        this.dataNascimento = dataNascimento;
         this.email = email;
         this.senha = senha;
         this.telefone = telefone;
@@ -121,12 +121,12 @@ abstract class Usuario {
         this.estado = estado;
     }
 
-    public Date getData_nascimento() {
-        return data_nascimento;
+    public Date getDataNascimento() {
+        return dataNascimento;
     }
 
-    public void setData_nascimento(Date data_nascimento) {
-        this.data_nascimento = data_nascimento;
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
     
     
