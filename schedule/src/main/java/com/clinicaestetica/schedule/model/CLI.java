@@ -25,12 +25,12 @@ public class CLI {
 
     public static void main(String[] args) {
         
-        System.out.println("Bem-vindo ao Cliente CLI da Clínica Estética.");
+        System.out.println("CLÍNICA ESTÉTICA ROSA BEAUTY");
         
         while (true) {
             System.out.println("\n-------------------------------------");
             System.out.println("O que você deseja fazer?");
-            System.out.println("1. Cadastrar um novo cliente");
+            System.out.println("1. Realizar cadastro");
             System.out.println("2. Fazer login");
             System.out.println("3. Sair");
             System.out.print("Digite sua opção: ");
@@ -60,7 +60,7 @@ public class CLI {
     }
 
     private static void cadastrarCliente() {
-        System.out.println("\n--- Cadastro de Novo Cliente ---");
+        System.out.println("\n--- CADASTRO DE CLIENTE ---");
         try {
             System.out.print("Nome: ");
             String nome = scanner.nextLine();
