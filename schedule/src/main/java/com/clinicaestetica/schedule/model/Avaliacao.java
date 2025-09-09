@@ -5,7 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Avaliacao {
@@ -13,29 +14,21 @@ public class Avaliacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
     private int nota;
-    
     private String comentario;
     
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "agendamento_id", nullable = false)
     private Agendamento agendamento;
-
-    @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
 
     // Construtor vazio (obrigatório para JPA)
     public Avaliacao() {
     }
 
     // Construtor com todos os atributos
-    public Avaliacao(int nota, String comentario, Agendamento agendamento, Cliente cliente) {
+    public Avaliacao(int nota, String comentario) {
         this.nota = nota;
         this.comentario = comentario;
-        this.agendamento = agendamento;
-        this.cliente = cliente;
     }
 
     // Getters e Setters
@@ -43,11 +36,7 @@ public class Avaliacao {
     public Long getId() {
         return id;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    
     public int getNota() {
         return nota;
     }
@@ -72,11 +61,4 @@ public class Avaliacao {
         this.agendamento = agendamento;
     }
 
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
 }

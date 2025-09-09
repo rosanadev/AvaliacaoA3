@@ -2,11 +2,15 @@
 package com.clinicaestetica.schedule.model;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Administrador extends Usuario{
+    @ManyToMany(mappedBy = "administradores")
+    private Set<Agendamento> agendamentos;
 
     public Administrador(){
 

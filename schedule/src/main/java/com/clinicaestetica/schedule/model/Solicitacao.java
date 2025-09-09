@@ -8,6 +8,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
+import com.clinicaestetica.schedule.enums.StatusSolicitacao;
+import com.clinicaestetica.schedule.enums.TipoSolicitacao; // Adicionei a importação para ser mais claro
+
 @Entity
 public class Solicitacao {
 
@@ -15,31 +18,36 @@ public class Solicitacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private String tipo; // Ex: CANCELAMENTO, ALTERACAO
+    private TipoSolicitacao tipo; // Usando a enum que definimos
     
     private String descricao;
     
-    private String status; // Ex: PENDENTE, APROVADA, RECUSADA
+    private StatusSolicitacao status; // Ex: PENDENTE, APROVADA, RECUSADA
     
-    private LocalDateTime dataCriacao; // Atributo para registrar a data e hora da solicitação
+    private LocalDateTime dataCriacao;
 
     @ManyToOne
     @JoinColumn(name = "agendamento_id", nullable = false)
     private Agendamento agendamento;
 
+    @ManyToOne
+    @JoinColumn(name = "profissional_id", nullable = false)
+    private Profissional profissional; // O atributo para a relação com Profissional
+
     public Solicitacao() {
     }
 
-    public Solicitacao(String tipo, String descricao, String status, Agendamento agendamento, LocalDateTime dataCriacao) {
+    // Construtor completo
+    public Solicitacao(TipoSolicitacao tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional, LocalDateTime dataCriacao) {
         this.tipo = tipo;
         this.descricao = descricao;
         this.status = status;
         this.agendamento = agendamento;
+        this.profissional = profissional;
         this.dataCriacao = dataCriacao;
     }
-
-    // Getters e Setters
     
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -48,11 +56,11 @@ public class Solicitacao {
         this.id = id;
     }
 
-    public String getTipo() {
+    public TipoSolicitacao getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoSolicitacao tipo) {
         this.tipo = tipo;
     }
 
@@ -64,11 +72,11 @@ public class Solicitacao {
         this.descricao = descricao;
     }
 
-    public String getStatus() {
+    public StatusSolicitacao getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusSolicitacao status) {
         this.status = status;
     }
 
@@ -78,6 +86,14 @@ public class Solicitacao {
 
     public void setAgendamento(Agendamento agendamento) {
         this.agendamento = agendamento;
+    }
+
+    public Profissional getProfissional() {
+        return profissional;
+    }
+
+    public void setProfissional(Profissional profissional) {
+        this.profissional = profissional;
     }
 
     public LocalDateTime getDataCriacao() {

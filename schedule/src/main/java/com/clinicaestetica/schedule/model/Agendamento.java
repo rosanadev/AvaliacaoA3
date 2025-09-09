@@ -5,23 +5,26 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
+
+import com.clinicaestetica.schedule.enums.StatusAgendamento;
 
 @Entity
 public class Agendamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
+    private Long idAgendamento;
     private LocalDateTime dataHora;
-
-    private String status;
-    
-    private BigDecimal valorPago;
-    
+    private StatusAgendamento status;
     private LocalDateTime dataCancelamento;
 
     @ManyToOne
@@ -36,15 +39,31 @@ public class Agendamento {
     @JoinColumn(name = "servico_id", nullable = false)
     private Servico servico;
 
+    @ManyToMany
+    @JoinTable(
+        name = "agendamento_administrador",
+        joinColumns = @JoinColumn(name = "agendamento_id"),
+        inverseJoinColumns = @JoinColumn(name = "administrador_id")
+    )
+    private Set<Administrador> administradores;
+
+    @OneToOne(mappedBy = "agendamento")
+    private Avaliacao avaliacao;
+
+    @OneToOne(mappedBy = "agendamento")
+    private Pagamento pagamento;
+
+    @OneToMany(mappedBy = "agendamento")
+    private Set<Solicitacao> solicitacoes;
+
     // Construtor vazio (obrigatório para JPA)
     public Agendamento() {
     }
 
     // Construtor com todos os atributos
-    public Agendamento(LocalDateTime dataHora, String status, BigDecimal valorPago, LocalDateTime dataCancelamento, Cliente cliente, Profissional profissional, Servico servico) {
+    public Agendamento(LocalDateTime dataHora, StatusAgendamento status, LocalDateTime dataCancelamento, Cliente cliente, Profissional profissional, Servico servico) {
         this.dataHora = dataHora;
         this.status = status;
-        this.valorPago = valorPago;
         this.dataCancelamento = dataCancelamento;
         this.cliente = cliente;
         this.profissional = profissional;
@@ -54,11 +73,11 @@ public class Agendamento {
     // Getters e Setters
 
     public Long getId() {
-        return id;
+        return idAgendamento;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long idAgendamento) {
+        this.idAgendamento = idAgendamento;
     }
 
     public LocalDateTime getDataHora() {
@@ -69,20 +88,12 @@ public class Agendamento {
         this.dataHora = dataHora;
     }
 
-    public String getStatus() {
+    public StatusAgendamento getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusAgendamento status) {
         this.status = status;
-    }
-
-    public BigDecimal getValorPago() {
-        return valorPago;
-    }
-
-    public void setValorPago(BigDecimal valorPago) {
-        this.valorPago = valorPago;
     }
 
     public LocalDateTime getDataCancelamento() {
@@ -109,11 +120,20 @@ public class Agendamento {
         this.profissional = profissional;
     }
 
-    public Servico getServico() {
+    public Servico getServico() {   
         return servico;
     }
 
     public void setServico(Servico servico) {
         this.servico = servico;
     }
+
+    public Set<Solicitacao> getSolicitacoes() {
+        return solicitacoes;
+    }
+
+    public void setSolicitacoes(Set<Solicitacao> solicitacoes) {
+        this.solicitacoes = solicitacoes;
+    }
+
 }

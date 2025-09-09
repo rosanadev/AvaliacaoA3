@@ -1,10 +1,17 @@
 package com.clinicaestetica.schedule.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Servico {
@@ -15,6 +22,10 @@ public class Servico {
     private String descricao;
     private BigDecimal preco;
     private int duracaoEmMinutos;
+    @OneToMany(mappedBy = "servico")
+    private List<Agendamento> agendamentos = new ArrayList<>();
+    @ManyToMany(mappedBy = "servicos")
+    private Set<Especialidade> especialidades = new HashSet<>();
 
     public Servico(){ //Construtor vazio (obrigatório para a JPA)
 
