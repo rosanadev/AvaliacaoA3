@@ -21,7 +21,7 @@ public class Servico {
     private String nome;
     private String descricao;
     private BigDecimal preco;
-    private int duracaoEmMinutos;
+    private int duracao_em_minutos;
     @OneToMany(mappedBy = "servico")
     private List<Agendamento> agendamentos = new ArrayList<>();
     @ManyToMany(mappedBy = "servicos")
@@ -31,11 +31,11 @@ public class Servico {
 
     }
 
-    public Servico(String nomeString, String descricaoString, BigDecimal precoBigDecimal, int duracaoEmMinutosInt){
-        this.nome = nomeString;
-        this.descricao = descricaoString;
-        this.preco = precoBigDecimal;
-        this.duracaoEmMinutos = duracaoEmMinutosInt;
+    public Servico(String nome, String descricao, BigDecimal preco, int duracao_em_minutos){
+        this.nome = nome;
+        this.descricao = descricao;
+        this.preco = preco;
+        this.duracao_em_minutos = duracao_em_minutos;
 
     } // O ID não faz parte do construtor porque ele é gerado automaticamente pelo database
 
@@ -74,11 +74,11 @@ public class Servico {
     }
 
     public int getDuracaoEmMinutos() {
-        return duracaoEmMinutos;
+        return duracao_em_minutos;
     }
 
-    public void setDuracaoEmMinutos (int duracaoEmMinutos) {
-        this.duracaoEmMinutos = duracaoEmMinutos;
+    public void setDuracaoEmMinutos (int duracao_em_minutos) {
+        this.duracao_em_minutos = duracao_em_minutos;
     }
 
 }

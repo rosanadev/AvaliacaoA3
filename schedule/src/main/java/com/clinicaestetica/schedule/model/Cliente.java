@@ -16,8 +16,7 @@ public class Cliente extends Usuario {
     }
 
     public Cliente(String nome, String cpf, LocalDate data_nascimento, String email, String senha,
-            String telefone, String cep, String complemento, String bairro, String cidade, String estado)
-            {
+            String telefone, String cep, String complemento, String bairro, String cidade, String estado) {
         super(nome, cpf, data_nascimento, email, senha, telefone, cep, complemento, bairro, cidade, estado);
     }
 
