@@ -24,6 +24,12 @@ public class ClienteController {
 
     private ClienteService clienteService;
 
+    @GetMapping
+    public ResponseEntity<List<Cliente>> listarClientes() {
+        List<Cliente> clientes = clienteService.listarClientes();
+        return new ResponseEntity<>(clientes, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Cliente> cadastrarCliente(@RequestBody Cliente cliente) {
         Cliente novoCliente = clienteService.cadastrarCliente(cliente);
