@@ -2,6 +2,9 @@ package com.clinicaestetica.schedule.controller;
 
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.service.AgendamentoService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,12 @@ public class AgendamentoController {
 
     @Autowired
     private AgendamentoService agendamentoService;
+
+    @GetMapping
+    public ResponseEntity<List<Agendamento>> listarAgendamentos() {
+        List<Agendamento> agendamentos = agendamentoService.listarAgendamentos();
+        return new ResponseEntity<>(agendamentos, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<Agendamento> agendarServico(@RequestBody Agendamento agendamento) {
