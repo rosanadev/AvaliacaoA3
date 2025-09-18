@@ -16,8 +16,6 @@ import com.clinicaestetica.schedule.repository.ClienteRepository;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
 import com.clinicaestetica.schedule.repository.ServicoRepository;
 
-import jakarta.persistence.EntityNotFoundException;
-
 @Service
 public class AgendamentoService {
 
@@ -38,19 +36,18 @@ public class AgendamentoService {
     }
 
     public Agendamento agendarServico(Agendamento agendamento) {
-        
         if (agendamento.getCliente().getIdUsuario() == null) {
-            throw new EntityNotFoundException("Cliente não encontrado.");
+            throw new RuntimeException("Cliente não encontrado.");
         }
 
         Cliente cliente = clienteRepository.findById(agendamento.getCliente().getIdUsuario())
-        .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado."));
+        .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
 
         Profissional profissional = profissionalRepository.findById(agendamento.getProfissional().getIdUsuario())
-        .orElseThrow(() -> new EntityNotFoundException("Profissional não encontrado."));
+        .orElseThrow(() -> new RuntimeException("Profissional não encontrado."));
 
         Servico servico = servicoRepository.findById(agendamento.getServico().getId())
-        .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado."));
+        .orElseThrow(() -> new RuntimeException("Serviço não encontrado."));
 
         agendamento.setCliente(cliente);
         agendamento.setProfissional(profissional);
