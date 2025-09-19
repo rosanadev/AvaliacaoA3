@@ -2,6 +2,7 @@ package com.clinicaestetica.schedule.controller;
 
 import com.clinicaestetica.schedule.model.Solicitacao;
 import com.clinicaestetica.schedule.service.SolicitacaoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class SolicitacaoController {
     private SolicitacaoService solicitacaoService;
 
     @PostMapping
-    public ResponseEntity<Solicitacao> criarSolicitacao(@RequestBody Solicitacao solicitacao) {
+    public ResponseEntity<Solicitacao> criarSolicitacao(@Valid @RequestBody Solicitacao solicitacao) {
         Solicitacao novaSolicitacao = solicitacaoService.criarSolicitacao(solicitacao);
         return new ResponseEntity<>(novaSolicitacao, HttpStatus.CREATED);
     }

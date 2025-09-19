@@ -2,6 +2,11 @@ package com.clinicaestetica.schedule.controller;
 
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.service.AgendamentoService;
+
+import jakarta.validation.Valid;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +26,7 @@ public class AgendamentoController {
     private AgendamentoService agendamentoService;
 
     @PostMapping
-    public ResponseEntity<Agendamento> agendarServico(@RequestBody Agendamento agendamento) {
+    public ResponseEntity<Agendamento> agendarServico(@Valid @RequestBody Agendamento agendamento) {
         Agendamento novoAgendamento = agendamentoService.agendarServico(agendamento);
         return new ResponseEntity<>(novoAgendamento, HttpStatus.CREATED);
     }
@@ -35,8 +40,9 @@ public class AgendamentoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Agendamento> getAgendamentoPorId(@PathVariable Long id) {
-        return agendamentoService.getAgendamento(id)
-                .map(agendamento -> new ResponseEntity<>(agendamento, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        // Agora o service lança a exceção, o ControllerAdvice a captura
+        Optional<Agendamento> agendamento = agendamentoService.getAgendamento(id);
+        return agendamento.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

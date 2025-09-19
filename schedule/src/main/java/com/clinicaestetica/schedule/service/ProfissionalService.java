@@ -9,7 +9,7 @@ import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
 
 @Service
-class ProfisisonalService {
+class ProfissionalService {
 
     @Autowired
     private ProfissionalRepository profissionalRepository;

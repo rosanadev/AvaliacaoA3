@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
+import jakarta.validation.Valid;
 
 @RestController // Esta anotação diz ao Spring que esta classe é uma API que irá responder a requisições web.
 @RequestMapping("/servicos") //Define o endereço base da nossa API. Todos os métodos nesta classe estarão sob o caminho /servicos
@@ -28,26 +29,23 @@ public class ServicoController {
     }
 
     @PostMapping
-    public ResponseEntity<Servico> criarServico(@RequestBody Servico servico) {
-        return servicoService.criarServico(servico);
+    public ResponseEntity<Servico> criarServico(@Valid @RequestBody Servico servico) {
+        // Alterado para retornar HttpStatus.CREATED
+        Servico savedServico = servicoService.criarServico(servico).getBody(); // Pega o corpo do ResponseEntity
+        return new ResponseEntity<>(savedServico, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Servico> obterServicoPorId(@PathVariable Long id) {
-        Optional<Servico> servicoOptional = servicoService.getServico(id);
-        return servicoOptional.map(
-            servico -> new ResponseEntity<>(servico, HttpStatus.OK))
-            .orElseGet(()-> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        // Agora o service lança a exceção, o ControllerAdvice a captura
+        Servico servico = servicoService.getServico(id);
+        return new ResponseEntity<>(servico, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarServico(@PathVariable Long id) {
-        Optional<Servico> servicoOptional = servicoService.getServico(id);
-        if (servicoOptional.isPresent()) {
-            servicoService.deletarServico(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        // Agora o service lança a exceção, o ControllerAdvice a captura
+        servicoService.deletarServico(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
