@@ -9,7 +9,7 @@ import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
 
 @Service
-class ProfissionalService {
+public class ProfissionalService {
 
     @Autowired
     private ProfissionalRepository profissionalRepository;
@@ -21,6 +21,11 @@ class ProfissionalService {
         return profissionalOptional;
     }
     return Optional.empty();
+    }
+
+    
+    public Profissional criarProfissional(Profissional profissional) {
+        return profissionalRepository.save(profissional);
     }
 
 
