@@ -5,6 +5,7 @@ import com.clinicaestetica.schedule.model.Servico;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -147,10 +148,13 @@ public class CLI {
                 .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(response.body()); 
+            String nome = jsonNode.get("nome").asText().toUpperCase(); // extrair nome do response do JSON
 
             if (response.statusCode() == 200) {
                 System.out.println("Login realizado com sucesso!");
-                System.out.println("Detalhe do Cliente: " + response.body());
+                System.out.println("OLÁ, " + nome);
                 listarServicos();
             } else {
                 System.out.println("Falha no login. Status: " + response.statusCode());
@@ -184,11 +188,14 @@ public class CLI {
                 .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(response.body()); 
+            String nome = jsonNode.get("nome").asText().toUpperCase(); // extrair nome do response do JSON
 
             if (response.statusCode() == 200) {
                 System.out.println("Login realizado com sucesso!");
-                System.out.println("Detalhes do cliente: " + response.body());
-                listarServicos();
+                System.out.println("OLÁ, " + nome);
+                
             } else {
                 System.out.println("Falha no login. Status: " + response.statusCode());
                 System.out.println("Erro: " + response.body());
@@ -208,6 +215,7 @@ public class CLI {
             System.out.println("1. Área do cliente");
             System.out.println("2. Área do funcionário");
             System.out.println("3. Voltar ao menu");
+            System.out.print("Digite sua opção: ");;
 
             try{
                 int opcao = scanner.nextInt();
