@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
-import java.util.Optional;
 import jakarta.validation.Valid;
 
 @RestController // Esta anotação diz ao Spring que esta classe é uma API que irá responder a requisições web.
@@ -24,8 +23,9 @@ public class ServicoController {
     private ServicoService servicoService;
 
     @GetMapping // Esta anotação, sem nenhum parâmetro, diz que o método listarServicos() será executado quando alguém fizer uma requisição GET para o endereço base da nossa API, que é /servicos
-    public List<Servico> listarServicos() { //Este método chama a nossa lógica de negócio (servicoService) e retorna a lista de serviços que o banco de dados enviou.
-        return servicoService.listarServicos(); 
+    public ResponseEntity<List<Servico>> listarServicos() { //Este método chama a nossa lógica de negócio (servicoService) e retorna a lista de serviços que o banco de dados enviou.
+        List<Servico> servicos = servicoService.listarServicos();
+        return ResponseEntity.ok(servicos);
     }
 
     @PostMapping

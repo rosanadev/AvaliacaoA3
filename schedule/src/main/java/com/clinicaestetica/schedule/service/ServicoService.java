@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.clinicaestetica.schedule.model.Servico;
 import java.util.List;
-import java.util.NoSuchElementException; // Importar
-import java.util.Optional;
+import java.util.NoSuchElementException; 
 
 @Service
 
