@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Cliente extends Usuario {
     @OneToMany(mappedBy = "cliente")
+    @JsonManagedReference(value = "cliente-agendamentos")
     private List<Agendamento> agendamentos = new ArrayList<>();
 
     public Cliente() {
