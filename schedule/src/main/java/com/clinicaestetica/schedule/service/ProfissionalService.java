@@ -1,12 +1,17 @@
 package com.clinicaestetica.schedule.service;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
+
+import com.clinicaestetica.schedule.model.Agendamento;
 
 @Service
 public class ProfissionalService {
@@ -26,6 +31,17 @@ public class ProfissionalService {
     
     public Profissional criarProfissional(Profissional profissional) {
         return profissionalRepository.save(profissional);
+    }
+
+    public Profissional getProfissional(long id) {
+        return profissionalRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("Profissional com id " + id +" não encontrado"));
+    }
+
+    public Set<Agendamento> getAgendaDoProfissional(long id) {
+        Profissional profissional = profissionalRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("Profissional com id " + id + " não encontrado"));
+        return profissional.getAgendamentos();
     }
 
 

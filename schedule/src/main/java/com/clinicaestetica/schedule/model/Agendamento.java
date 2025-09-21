@@ -11,6 +11,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -28,10 +30,12 @@ public class Agendamento {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
+    @JsonBackReference(value = "cliente-agendamentos")
     private Cliente cliente;
 
     @ManyToOne
     @JoinColumn(name = "profissional_id", nullable = false)
+    @JsonBackReference(value = "profissional-agendamentos")
     private Profissional profissional;
 
     @ManyToOne
