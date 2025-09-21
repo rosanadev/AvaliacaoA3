@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.model.Cliente;
 import com.clinicaestetica.schedule.service.ClienteService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/clientes")
@@ -24,22 +25,28 @@ public class ClienteController {
 
     private ClienteService clienteService;
 
+    @GetMapping
+    public ResponseEntity<List<Cliente>> listarClientes() {
+        List<Cliente> clientes = clienteService.listarClientes();
+        return new ResponseEntity<>(clientes, HttpStatus.OK);
+    }
+
     @PostMapping
-    public ResponseEntity<Cliente> cadastrarCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> cadastrarCliente(@Valid @RequestBody Cliente cliente) {
         Cliente novoCliente = clienteService.cadastrarCliente(cliente);
         return new ResponseEntity<>(novoCliente, HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> getCliente(@PathVariable Long id) {
-        Optional<Cliente> clienteOptional = clienteService.getCliente(id);
-        return clienteOptional.map(cliente -> new ResponseEntity<>(cliente, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));        
+        // Agora o service lança a exceção, o ControllerAdvice a captura
+        Cliente cliente = clienteService.getCliente(id);
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
     @GetMapping("/{id}/agendamentos")
     public ResponseEntity<List<Agendamento>> getAgendamentosDoCliente(@PathVariable Long id) {
-        Optional<List<Agendamento>> agendamentosOptional = clienteService.getAgendamentosDoCliente(id);
-        return agendamentosOptional.map(agendamentos -> new ResponseEntity<>(agendamentos, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        // Agora o service lança a exceção, o ControllerAdvice a captura
+        List<Agendamento> agendamentos = clienteService.getAgendamentosDoCliente(id);
+        return new ResponseEntity<>(agendamentos, HttpStatus.OK);
     }
 
     @PostMapping("/login")

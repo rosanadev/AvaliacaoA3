@@ -1,26 +1,55 @@
 package com.clinicaestetica.schedule.model;
 
 import java.time.LocalDate;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 @MappedSuperclass
 public abstract class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long idUsuario; // Chave primária para o banco de dados, incrementado automaticamente
+    @NotBlank(message = "O nome não pode estar em branco")
+    @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
     protected String nome;
+    @NotBlank(message = "O CPF não pode estar em branco")
+    @Pattern(regexp = "\\d{11}", message = "O CPF deve conter 11 dígitos numéricos")
     protected String cpf;
+    @NotNull(message = "A data de nascimento não pode ser nula")
+    @Past(message = "A data de nascimento deve ser no passado")
     protected LocalDate data_nascimento;
+    @NotBlank(message = "O email não pode estar em branco")
+    @Email(message = "Formato de email inválido")
+    @Size(max = 100, message = "O email não pode exceder 100 caracteres")
     protected String email;
+    @NotBlank(message = "A senha não pode estar em branco")
+    @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
     protected String senha;
+    @NotBlank(message = "O telefone não pode estar em branco")
+    @Pattern(regexp = "\\d{10,11}", message = "O telefone deve conter 10 ou 11 dígitos numéricos")
     protected String telefone;
+    @NotBlank(message = "O CEP não pode estar em branco")
+    @Pattern(regexp = "\\d{8}", message = "O CEP deve conter 8 dígitos numéricos")
     protected String cep;
+    @Size(max = 255, message = "O complemento não pode exceder 255 caracteres")
     protected String complemento;
+    @NotBlank(message = "O bairro não pode estar em branco")
+    @Size(max = 100, message = "O bairro não pode exceder 100 caracteres")
     protected String bairro;
+    @NotBlank(message = "A cidade não pode estar em branco")
+    @Size(max = 100, message = "A cidade não pode exceder 100 caracteres")
     protected String cidade;
+    @NotBlank(message = "O estado não pode estar em branco")
+    @Size(min = 2, max = 2, message = "O estado deve ser a sigla (UF) com 2 caracteres")
     protected String estado;
 
     public Usuario() {

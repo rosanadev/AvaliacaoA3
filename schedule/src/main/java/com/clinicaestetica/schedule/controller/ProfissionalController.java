@@ -1,5 +1,6 @@
 package com.clinicaestetica.schedule.controller;
 
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.service.ProfissionalService;
+
 @RestController
 @RequestMapping("/profissionais")
 public class ProfissionalController {

@@ -1,8 +1,8 @@
 package com.clinicaestetica.schedule.service;
 
 import java.util.List;
+import java.util.NoSuchElementException; // Importar
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.clinicaestetica.schedule.model.Cliente;
@@ -13,6 +13,10 @@ import com.clinicaestetica.schedule.model.Agendamento;
 public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
+
+    public List<Cliente> listarClientes() {
+        return clienteRepository.findAll();
+    }
 
     public Cliente cadastrarCliente (Cliente cliente) {
         return clienteRepository.save(cliente);
@@ -27,14 +31,15 @@ public class ClienteService {
     return Optional.empty();
     }
 
-    public Optional<Cliente> getCliente(Long id) {
-        return clienteRepository.findById(id);
+    public Cliente getCliente(Long id) { // Alterado para retornar Cliente diretamente
+        return clienteRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Cliente com ID " + id + " não encontrado"));
     }
 
-    public Optional<List<Agendamento>> getAgendamentosDoCliente(Long id) {
-        Optional<Cliente> clienteOptional = clienteRepository.findById(id);
-
-        return clienteOptional.map(Cliente::getAgendamentos);
+    public List<Agendamento> getAgendamentosDoCliente(Long id) { // Alterado para retornar List<Agendamento> diretamente
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Cliente com ID " + id + " não encontrado"));
+        return cliente.getAgendamentos();
     }
 
 }
