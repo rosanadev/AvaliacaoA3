@@ -1,11 +1,6 @@
 package com.clinicaestetica.schedule.controller;
 
-import com.clinicaestetica.schedule.model.Agendamento;
-import com.clinicaestetica.schedule.service.AgendamentoService;
-
-
-import jakarta.validation.Valid;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +11,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.clinicaestetica.schedule.model.Agendamento;
+import com.clinicaestetica.schedule.service.AgendamentoService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/agendamentos")
@@ -52,5 +53,19 @@ public class AgendamentoController {
         Optional<Agendamento> agendamento = agendamentoService.getAgendamento(id);
         return agendamento.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // endpoint para reagendar
+    @PutMapping("/{id}/reagendar")
+    public ResponseEntity<Agendamento> reagendarAgendamento(
+            @PathVariable Long id,
+            @RequestBody LocalDateTime novaDataHora
+    ) {
+        try {
+            Agendamento agendamentoAtualizado = agendamentoService.reagendarAgendamento(id, novaDataHora);
+            return ResponseEntity.ok(agendamentoAtualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }
