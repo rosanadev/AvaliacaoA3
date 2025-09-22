@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.service.ProfissionalService;
 import com.clinicaestetica.schedule.model.Agendamento;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/profissionais")
@@ -50,6 +51,12 @@ public class ProfissionalController {
     public ResponseEntity<Profissional> getProfissional(@PathVariable long id) {
         Profissional profissional = profissionalService.getProfissional(id);
         return new ResponseEntity<>(profissional, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agendamentos")
+    public ResponseEntity<Set<Agendamento>> getAgendamentosDoProfissional(@PathVariable long id) {
+        Set<Agendamento> agendamentos = profissionalService.getAgendamentosDoProfissional(id);
+        return new ResponseEntity<>(agendamentos, HttpStatus.OK);
     }
 
 }
