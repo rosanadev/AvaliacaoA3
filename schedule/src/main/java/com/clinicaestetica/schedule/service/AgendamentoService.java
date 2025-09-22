@@ -11,7 +11,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.clinicaestetica.schedule.enums.StatusAgendamento;
 import com.clinicaestetica.schedule.repository.ClienteRepository;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
 import com.clinicaestetica.schedule.repository.ServicoRepository;
@@ -67,5 +70,13 @@ public class AgendamentoService {
 
     public Optional<Agendamento> getAgendamento(Long id) {
         return agendamentoRepository.findById(id);
+    }
+
+     public Agendamento atualizarStatus(Long id, StatusAgendamento novoStatus) {
+        Agendamento agendamento = agendamentoRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado."));
+
+        agendamento.setStatus(novoStatus);
+        return agendamentoRepository.save(agendamento);
     }
 }
