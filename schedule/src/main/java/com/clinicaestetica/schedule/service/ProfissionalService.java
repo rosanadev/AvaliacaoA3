@@ -38,7 +38,7 @@ public class ProfissionalService {
         .orElseThrow(() -> new NoSuchElementException("Profissional com id " + id +" não encontrado"));
     }
 
-    public Set<Agendamento> getAgendaDoProfissional(long id) {
+    public Set<Agendamento> getAgendamentosDoProfissional(long id) {
         Profissional profissional = profissionalRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("Profissional com id " + id + " não encontrado"));
         return profissional.getAgendamentos();
