@@ -12,7 +12,6 @@ public class SolicitacaoService {
     private SolicitacaoRepository solicitacaoRepository;
 
     public Solicitacao criarSolicitacao(Solicitacao solicitacao) {
-        // Lógica de negócio para a solicitação (se houver)
         return solicitacaoRepository.save(solicitacao);
     }
 }

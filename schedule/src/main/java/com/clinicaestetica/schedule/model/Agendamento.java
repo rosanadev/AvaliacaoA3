@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -57,6 +58,7 @@ public class Agendamento {
     private Pagamento pagamento;
 
     @OneToMany(mappedBy = "agendamento")
+    @JsonManagedReference(value = "agendamento-solicitacoes")
     private Set<Solicitacao> solicitacoes;
 
     // Construtor vazio (obrigatório para JPA)

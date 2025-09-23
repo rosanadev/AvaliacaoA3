@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequestMapping("/solicitacoes")
 public class SolicitacaoController {
@@ -22,5 +23,11 @@ public class SolicitacaoController {
     public ResponseEntity<Solicitacao> criarSolicitacao(@Valid @RequestBody Solicitacao solicitacao) {
         Solicitacao novaSolicitacao = solicitacaoService.criarSolicitacao(solicitacao);
         return new ResponseEntity<>(novaSolicitacao, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Solicitacao>> listarSolicitacao() {
+        List<Solicitacao> solicitacoes = solicitacaoService.listarSolicitacao();
+        return new ResponseEntity<>(solicitacoes, HttpStatus.OK);
     }
 }

@@ -1,5 +1,4 @@
 package com.clinicaestetica.schedule.model;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,9 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
-
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
-import com.clinicaestetica.schedule.enums.TipoSolicitacao; // Adicionei a importação para ser mais claro
+import com.clinicaestetica.schedule.enums.TipoSolicitacao; 
 
 @Entity
 public class Solicitacao {
@@ -17,19 +15,24 @@ public class Solicitacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    private TipoSolicitacao tipo; // Usando a enum que definimos
-    
-    private String descricao;
-    
-    private StatusSolicitacao status; // Ex: PENDENTE, APROVADA, RECUSADA
-    
-    private LocalDateTime dataCriacao;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private TipoSolicitacao tipo; // Usando a enum que definimos
+
+    @NotBlank(message = "A descrição é obrigatória")
+    @Size(min = 3, message = "A descrição não pode ter menos de 3 caracteres")
+    private String descricao;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private StatusSolicitacao status; // Ex: PENDENTE, APROVADA, RECUSADA
+    @NotNull
+    private LocalDateTime dataCriacao;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "agendamento_id", nullable = false)
     private Agendamento agendamento;
-
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "profissional_id", nullable = false)
     private Profissional profissional; // O atributo para a relação com Profissional
@@ -38,13 +41,13 @@ public class Solicitacao {
     }
 
     // Construtor completo
-    public Solicitacao(TipoSolicitacao tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional, LocalDateTime dataCriacao) {
+    public Solicitacao(TipoSolicitacao tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional) {
         this.tipo = tipo;
         this.descricao = descricao;
         this.status = status;
         this.agendamento = agendamento;
         this.profissional = profissional;
-        this.dataCriacao = dataCriacao;
+        this.dataCriacao = LocalDateTime.now(); // Define a data de criação como o momento atual
     }
     
     // Getters e Setters

@@ -1,0 +1,11 @@
+package com.clinicaestetica.schedule.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class SolicitacaoException extends RuntimeException {
+    public SolicitacaoException(String message) {
+        super(message);
+    }
+}
