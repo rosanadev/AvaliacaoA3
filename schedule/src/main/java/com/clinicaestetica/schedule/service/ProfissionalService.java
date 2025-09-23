@@ -28,11 +28,6 @@ public class ProfissionalService {
     return Optional.empty();
     }
 
-    
-    public Profissional criarProfissional(Profissional profissional) {
-        return profissionalRepository.save(profissional);
-    }
-
     public Profissional getProfissional(long id) {
         return profissionalRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("Profissional com id " + id +" não encontrado"));
