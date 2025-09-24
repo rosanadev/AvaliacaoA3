@@ -1,15 +1,12 @@
 package com.clinicaestetica.schedule.controller;
 
-<<<<<<< HEAD
 import java.time.LocalDateTime;
-=======
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.service.AgendamentoService;
 import com.clinicaestetica.schedule.enums.StatusAgendamento;
 
 import jakarta.validation.Valid;
 
->>>>>>> 400000f5ac9d39f494c9ef34a5d8bdbeb5ea1039
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +63,6 @@ public class AgendamentoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-<<<<<<< HEAD
     // endpoint para reagendar
     @PutMapping("/{id}/reagendar")
     public ResponseEntity<Agendamento> reagendarAgendamento(
@@ -80,8 +76,7 @@ public class AgendamentoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-}
-=======
+
     // Novo endpoint para atualizar o status do agendamento
     @PatchMapping("/{id}/status")
     public ResponseEntity<Agendamento> atualizarStatus(@PathVariable Long id, @RequestParam StatusAgendamento novoStatus) {
@@ -89,4 +84,3 @@ public class AgendamentoController {
         return new ResponseEntity<>(agendamentoAtualizado, HttpStatus.OK);
     }
 }
->>>>>>> 400000f5ac9d39f494c9ef34a5d8bdbeb5ea1039

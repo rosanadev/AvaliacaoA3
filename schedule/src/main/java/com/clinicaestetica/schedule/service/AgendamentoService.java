@@ -10,14 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.clinicaestetica.schedule.enums.StatusAgendamento;
-<<<<<<< HEAD
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.model.Cliente;
 import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.model.Servico;
 import com.clinicaestetica.schedule.repository.AgendamentoRepository;
-=======
->>>>>>> 400000f5ac9d39f494c9ef34a5d8bdbeb5ea1039
 import com.clinicaestetica.schedule.repository.ClienteRepository;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
 import com.clinicaestetica.schedule.repository.ServicoRepository;
@@ -118,9 +115,6 @@ public class AgendamentoService {
     public Optional<Agendamento> getAgendamento(Long id) {
         return agendamentoRepository.findById(id);
     }
-<<<<<<< HEAD
-}
-=======
 
      public Agendamento atualizarStatus(Long id, StatusAgendamento novoStatus) {
         Agendamento agendamento = agendamentoRepository.findById(id)
@@ -130,4 +124,3 @@ public class AgendamentoService {
         return agendamentoRepository.save(agendamento);
     }
 }
->>>>>>> 400000f5ac9d39f494c9ef34a5d8bdbeb5ea1039
