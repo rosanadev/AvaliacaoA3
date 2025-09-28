@@ -9,7 +9,7 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
-import com.clinicaestetica.schedule.enums.TipoSolicitacao; // Adicionei a importação para ser mais claro
+import com.clinicaestetica.schedule.enums.TipoSolicitacaoAgendamento;
 
 @Entity
 public class Solicitacao {
@@ -18,7 +18,7 @@ public class Solicitacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private TipoSolicitacao tipo; // Usando a enum que definimos
+    private TipoSolicitacaoAgendamento tipo; // Usando a enum que definimos
     
     private String descricao;
     
@@ -38,7 +38,7 @@ public class Solicitacao {
     }
 
     // Construtor completo
-    public Solicitacao(TipoSolicitacao tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional, LocalDateTime dataCriacao) {
+    public Solicitacao(TipoSolicitacaoAgendamento tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional, LocalDateTime dataCriacao) {
         this.tipo = tipo;
         this.descricao = descricao;
         this.status = status;
@@ -56,11 +56,11 @@ public class Solicitacao {
         this.id = id;
     }
 
-    public TipoSolicitacao getTipo() {
+    public TipoSolicitacaoAgendamento getTipo() {
         return tipo;
     }
 
-    public void setTipo(TipoSolicitacao tipo) {
+    public void setTipo(TipoSolicitacaoAgendamento tipo) {
         this.tipo = tipo;
     }
 
