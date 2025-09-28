@@ -4,6 +4,7 @@ import com.clinicaestetica.schedule.model.Solicitacao;
 import com.clinicaestetica.schedule.repository.SolicitacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class SolicitacaoService {
@@ -14,5 +15,9 @@ public class SolicitacaoService {
     public Solicitacao criarSolicitacao(Solicitacao solicitacao) {
         // Lógica de negócio para a solicitação (se houver)
         return solicitacaoRepository.save(solicitacao);
+    }
+
+    public List<Solicitacao> listarSolicitacoes() {
+        return solicitacaoRepository.findAll();
     }
 }
