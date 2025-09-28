@@ -33,6 +33,14 @@ public class ProfissionalService {
         .orElseThrow(() -> new NoSuchElementException("Profissional com id " + id +" não encontrado"));
     }
 
+    public Long obterIdProfissionalLogado() {
+        List<Profissional> profissionais = profissionalRepository.findAll();
+        if (!profissionais.isEmpty()) {
+            return profissionais.get(0).getIdUsuario(); // ← Pega o ID do primeiro profissional
+        }
+        throw new NoSuchElementException("Nenhum profissional cadastrado no sistema");
+    }
+
     public Set<Agendamento> getAgendamentosDoProfissional(long id) {
         Profissional profissional = profissionalRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("Profissional com id " + id + " não encontrado"));
