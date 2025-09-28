@@ -167,14 +167,54 @@ public class CLI {
     }
 
         private static void loginProfissional() {
-        System.out.println("\n--- LOGIN DO PROFISSIONAL ---");
+            System.out.println("\n--- LOGIN DO PROFISSIONAL ---");
+            try {
+                System.out.print("Email: ");
+                String email = scanner.nextLine();
+                System.out.print("Senha: ");
+                String senha = scanner.nextLine();
+
+                Profissional credenciais = new Profissional();
+                credenciais.setEmail(email);
+                credenciais.setSenha(senha);
+                
+                String requestBody = objectMapper.writeValueAsString(credenciais);
+
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/profissionais/login"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(response.body()); 
+                String nome = jsonNode.get("nome").asText().toUpperCase(); // extrair nome do response do JSON
+
+                if (response.statusCode() == 200) {
+                    System.out.println("Login realizado com sucesso!");
+                    System.out.println("OLÁ, " + nome);
+                    
+                } else {
+                    System.out.println("Falha no login. Status: " + response.statusCode());
+                    System.out.println("Erro: " + response.body());
+                }
+
+            } catch (Exception e) {
+                System.err.println("Ocorreu um erro no login: " + e.getMessage());
+            }
+    }
+
+    private static void loginAdministrador(){
+        System.out.println("\n--- LOGIN DO ADMINISTRADOR ---");
         try {
             System.out.print("Email: ");
             String email = scanner.nextLine();
             System.out.print("Senha: ");
             String senha = scanner.nextLine();
 
-            Profissional credenciais = new Profissional();
+            Administrador credenciais = new Administrador();
             credenciais.setEmail(email);
             credenciais.setSenha(senha);
             
@@ -182,7 +222,7 @@ public class CLI {
 
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/profissionais/login"))
+                .uri(URI.create(BASE_URL + "/administrador/login"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
@@ -194,7 +234,7 @@ public class CLI {
 
             if (response.statusCode() == 200) {
                 System.out.println("Login realizado com sucesso!");
-                System.out.println("OLÁ, " + nome);
+                System.out.println("OLÁ, ADMINISTRADOR " + nome);
                 
             } else {
                 System.out.println("Falha no login. Status: " + response.statusCode());
@@ -203,6 +243,38 @@ public class CLI {
 
         } catch (Exception e) {
             System.err.println("Ocorreu um erro no login: " + e.getMessage());
+        }
+
+    }
+
+    private static void loginFuncionario(){
+        while (true) {
+
+            System.out.println("\n--- ÁREA DO FUNCIONÁRIO ---");
+            System.out.println("1. Fazer login como profissional");
+            System.out.println("2. Fazer login como administrador");
+
+            try{
+                
+                int opcao = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (opcao) {
+                    case 1:
+                        loginProfissional();
+                        break;
+                    case 2:
+                        loginAdministrador();
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+
+            }
+            catch (java.util.InputMismatchException e){
+                System.out.println("Entrada inválida. Por favor, digite um número");
+                scanner.nextLine();
+            }
         }
     }
     
@@ -226,11 +298,11 @@ public class CLI {
                         loginCliente();
                         break;
                     case 2:
-                        loginProfissional();
+                        loginFuncionario();
                         break;
                 
                     default:
-                        System.out.println("Opção inválida. Tente novamente.");;
+                        System.out.println("Opção inválida. Tente novamente.");
                 }
 
             }
