@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class SolicitacaoService {
@@ -47,5 +48,9 @@ public class SolicitacaoService {
         solicitacao.setStatus(StatusSolicitacao.PENDENTE);
 
         return solicitacaoRepository.save(solicitacao);
+    }
+
+    public List<Solicitacao> listarSolicitacoes() {
+        return solicitacaoRepository.findAll();
     }
 }
