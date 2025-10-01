@@ -1,15 +1,6 @@
 package com.clinicaestetica.schedule.controller;
 
-<<<<<<< HEAD
 import java.time.LocalDateTime;
-=======
-import com.clinicaestetica.schedule.model.Agendamento;
-import com.clinicaestetica.schedule.service.AgendamentoService;
-import com.clinicaestetica.schedule.enums.StatusAgendamento;
-
-import jakarta.validation.Valid;
-
->>>>>>> 400000f5ac9d39f494c9ef34a5d8bdbeb5ea1039
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinicaestetica.schedule.enums.StatusAgendamento;
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.service.AgendamentoService;
 
@@ -39,18 +31,21 @@ public class AgendamentoController {
     @Autowired
     private AgendamentoService agendamentoService;
 
+    // Listar todos os agendamentos
     @GetMapping
     public ResponseEntity<List<Agendamento>> listarAgendamentos() {
         List<Agendamento> agendamentos = agendamentoService.listarAgendamentos();
         return new ResponseEntity<>(agendamentos, HttpStatus.OK);
     }
 
+    // Criar um novo agendamento
     @PostMapping
     public ResponseEntity<Agendamento> agendarServico(@Valid @RequestBody Agendamento agendamento) {
         Agendamento novoAgendamento = agendamentoService.agendarServico(agendamento);
         return new ResponseEntity<>(novoAgendamento, HttpStatus.CREATED);
     }
 
+    // Cancelar agendamento por ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelarAgendamento(@PathVariable Long id) {
         return agendamentoService.cancelarAgendamento(id)
@@ -58,16 +53,15 @@ public class AgendamentoController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    // Buscar agendamento por ID
     @GetMapping("/{id}")
     public ResponseEntity<Agendamento> getAgendamentoPorId(@PathVariable Long id) {
-        // Agora o service lança a exceção, o ControllerAdvice a captura
         Optional<Agendamento> agendamento = agendamentoService.getAgendamento(id);
         return agendamento.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-<<<<<<< HEAD
-    // endpoint para reagendar
+    // Reagendar (atualizar data/hora)
     @PutMapping("/{id}/reagendar")
     public ResponseEntity<Agendamento> reagendarAgendamento(
             @PathVariable Long id,
@@ -80,13 +74,14 @@ public class AgendamentoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-}
-=======
-    // Novo endpoint para atualizar o status do agendamento
+
+    // Atualizar status do agendamento
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Agendamento> atualizarStatus(@PathVariable Long id, @RequestParam StatusAgendamento novoStatus) {
+    public ResponseEntity<Agendamento> atualizarStatus(
+            @PathVariable Long id,
+            @RequestParam StatusAgendamento novoStatus
+    ) {
         Agendamento agendamentoAtualizado = agendamentoService.atualizarStatus(id, novoStatus);
         return new ResponseEntity<>(agendamentoAtualizado, HttpStatus.OK);
     }
 }
->>>>>>> 400000f5ac9d39f494c9ef34a5d8bdbeb5ea1039
