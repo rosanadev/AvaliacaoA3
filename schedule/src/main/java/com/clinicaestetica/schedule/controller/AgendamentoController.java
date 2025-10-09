@@ -31,21 +31,18 @@ public class AgendamentoController {
     @Autowired
     private AgendamentoService agendamentoService;
 
-    // Listar todos os agendamentos
     @GetMapping
     public ResponseEntity<List<Agendamento>> listarAgendamentos() {
         List<Agendamento> agendamentos = agendamentoService.listarAgendamentos();
         return new ResponseEntity<>(agendamentos, HttpStatus.OK);
     }
 
-    // Criar um novo agendamento
     @PostMapping
     public ResponseEntity<Agendamento> agendarServico(@Valid @RequestBody Agendamento agendamento) {
         Agendamento novoAgendamento = agendamentoService.agendarServico(agendamento);
         return new ResponseEntity<>(novoAgendamento, HttpStatus.CREATED);
     }
 
-    // Cancelar agendamento por ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelarAgendamento(@PathVariable Long id) {
         return agendamentoService.cancelarAgendamento(id)
@@ -53,7 +50,6 @@ public class AgendamentoController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Buscar agendamento por ID
     @GetMapping("/{id}")
     public ResponseEntity<Agendamento> getAgendamentoPorId(@PathVariable Long id) {
         Optional<Agendamento> agendamento = agendamentoService.getAgendamento(id);
@@ -61,7 +57,6 @@ public class AgendamentoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Reagendar (atualizar data/hora)
     @PutMapping("/{id}/reagendar")
     public ResponseEntity<Agendamento> reagendarAgendamento(
             @PathVariable Long id,
@@ -75,7 +70,6 @@ public class AgendamentoController {
         }
     }
 
-    // Atualizar status do agendamento
     @PatchMapping("/{id}/status")
     public ResponseEntity<Agendamento> atualizarStatus(
             @PathVariable Long id,
