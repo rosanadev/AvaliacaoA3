@@ -27,13 +27,9 @@ public class SolicitacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Solicitacao> criarSolicitacao(@Valid @RequestBody CriarSolicitacaoDTO request) {
-        Solicitacao novaSolicitacao = solicitacaoService.criarSolicitacaoAgendamento(
-            request.getSolicitacao(),
-            request.getAgendamentoId(),
-            request.getDescricao(),
-            request.getTipo()
-        );
+
+    public ResponseEntity<Solicitacao> criarSolicitacao(@Valid @RequestBody CriarSolicitacaoDTO dto) {
+        Solicitacao novaSolicitacao = solicitacaoService.criarSolicitacaoAgendamento(dto);
         return new ResponseEntity<>(novaSolicitacao, HttpStatus.CREATED);
     }
 }
