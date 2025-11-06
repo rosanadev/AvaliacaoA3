@@ -31,6 +31,8 @@ public class Especialidade {
     )
     private Set<Servico> servicos = new HashSet<>();
 
+    public Especialidade() {}
+
     public Especialidade(String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
