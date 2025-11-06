@@ -1,5 +1,11 @@
 package com.clinicaestetica.schedule.model;
 
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import com.clinicaestetica.schedule.enums.StatusAgendamento;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +18,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -25,9 +30,11 @@ public class Agendamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAgendamento;
+
     private LocalDateTime dataHora;
     private StatusAgendamento status;
     private LocalDateTime dataCancelamento;
+    private boolean pagamentoParcial; // novo campo para pagamento 50%
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
@@ -61,21 +68,22 @@ public class Agendamento {
     @JsonManagedReference(value = "agendamento-solicitacoes")
     private Set<Solicitacao> solicitacoes;
 
-    // Construtor vazio (obrigatório para JPA)
-    public Agendamento() {
-    }
+    // Construtor vazio (obrigatório para JPA
+    public Agendamento() {}
 
     // Construtor com todos os atributos
-    public Agendamento(LocalDateTime dataHora, StatusAgendamento status, LocalDateTime dataCancelamento, Cliente cliente, Profissional profissional, Servico servico) {
+    public Agendamento(LocalDateTime dataHora, StatusAgendamento status, LocalDateTime dataCancelamento,
+                       Cliente cliente, Profissional profissional, Servico servico) {
         this.dataHora = dataHora;
         this.status = status;
         this.dataCancelamento = dataCancelamento;
         this.cliente = cliente;
         this.profissional = profissional;
         this.servico = servico;
+        this.pagamentoParcial = false; // pagamento integral
     }
 
-    // Getters e Setters
+    // Getters e Setters 
 
     public Long getId() {
         return idAgendamento;
@@ -109,6 +117,14 @@ public class Agendamento {
         this.dataCancelamento = dataCancelamento;
     }
 
+    public boolean isPagamentoParcial() {
+        return pagamentoParcial;
+    }
+
+    public void setPagamentoParcial(boolean pagamentoParcial) {
+        this.pagamentoParcial = pagamentoParcial;
+    }
+
     public Cliente getCliente() {
         return cliente;
     }
@@ -125,12 +141,36 @@ public class Agendamento {
         this.profissional = profissional;
     }
 
-    public Servico getServico() {   
+    public Servico getServico() {
         return servico;
     }
 
     public void setServico(Servico servico) {
         this.servico = servico;
+    }
+
+    public Set<Administrador> getAdministradores() {
+        return administradores;
+    }
+
+    public void setAdministradores(Set<Administrador> administradores) {
+        this.administradores = administradores;
+    }
+
+    public Avaliacao getAvaliacao() {
+        return avaliacao;
+    }
+
+    public void setAvaliacao(Avaliacao avaliacao) {
+        this.avaliacao = avaliacao;
+    }
+
+    public Pagamento getPagamento() {
+        return pagamento;
+    }
+
+    public void setPagamento(Pagamento pagamento) {
+        this.pagamento = pagamento;
     }
 
     public Set<Solicitacao> getSolicitacoes() {
@@ -140,5 +180,4 @@ public class Agendamento {
     public void setSolicitacoes(Set<Solicitacao> solicitacoes) {
         this.solicitacoes = solicitacoes;
     }
-
 }

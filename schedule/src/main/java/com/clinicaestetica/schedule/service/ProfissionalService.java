@@ -28,14 +28,17 @@ public class ProfissionalService {
     return Optional.empty();
     }
 
-    
-    public Profissional criarProfissional(Profissional profissional) {
-        return profissionalRepository.save(profissional);
-    }
-
     public Profissional getProfissional(long id) {
         return profissionalRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("Profissional com id " + id +" não encontrado"));
+    }
+
+    public Long obterIdProfissionalLogado() {
+        List<Profissional> profissionais = profissionalRepository.findAll();
+        if (!profissionais.isEmpty()) {
+            return profissionais.get(0).getIdUsuario(); // ← Pega o ID do primeiro profissional
+        }
+        throw new NoSuchElementException("Nenhum profissional cadastrado no sistema");
     }
 
     public Set<Agendamento> getAgendamentosDoProfissional(long id) {

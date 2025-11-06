@@ -1,11 +1,6 @@
 package com.clinicaestetica.schedule.controller;
 
-import com.clinicaestetica.schedule.model.Agendamento;
-import com.clinicaestetica.schedule.service.AgendamentoService;
-import com.clinicaestetica.schedule.enums.StatusAgendamento;
-
-import jakarta.validation.Valid;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.clinicaestetica.schedule.enums.StatusAgendamento;
+import com.clinicaestetica.schedule.model.Agendamento;
+import com.clinicaestetica.schedule.service.AgendamentoService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/agendamentos")
@@ -51,15 +52,29 @@ public class AgendamentoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Agendamento> getAgendamentoPorId(@PathVariable Long id) {
-        // Agora o service lança a exceção, o ControllerAdvice a captura
         Optional<Agendamento> agendamento = agendamentoService.getAgendamento(id);
         return agendamento.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Novo endpoint para atualizar o status do agendamento
+    @PutMapping("/{id}/reagendar")
+    public ResponseEntity<Agendamento> reagendarAgendamento(
+            @PathVariable Long id,
+            @RequestBody LocalDateTime novaDataHora
+    ) {
+        try {
+            Agendamento agendamentoAtualizado = agendamentoService.reagendarAgendamento(id, novaDataHora);
+            return ResponseEntity.ok(agendamentoAtualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Agendamento> atualizarStatus(@PathVariable Long id, @RequestParam StatusAgendamento novoStatus) {
+    public ResponseEntity<Agendamento> atualizarStatus(
+            @PathVariable Long id,
+            @RequestParam StatusAgendamento novoStatus
+    ) {
         Agendamento agendamentoAtualizado = agendamentoService.atualizarStatus(id, novoStatus);
         return new ResponseEntity<>(agendamentoAtualizado, HttpStatus.OK);
     }

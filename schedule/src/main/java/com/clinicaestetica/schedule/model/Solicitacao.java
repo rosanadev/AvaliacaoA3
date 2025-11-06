@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
-import com.clinicaestetica.schedule.enums.TipoSolicitacao; 
+import com.clinicaestetica.schedule.enums.TipoSolicitacao; // Adicionei a importação para ser mais claro
 
 @Entity
 public class Solicitacao {
@@ -15,13 +15,9 @@ public class Solicitacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
+    
     private TipoSolicitacao tipo; // Usando a enum que definimos
-
-    @NotBlank(message = "A descrição é obrigatória")
-    @Size(min = 3, message = "A descrição não pode ter menos de 3 caracteres")
+    
     private String descricao;
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -41,7 +37,7 @@ public class Solicitacao {
     }
 
     // Construtor completo
-    public Solicitacao(TipoSolicitacao tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional) {
+    public Solicitacao(TipoSolicitacao tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional, LocalDateTime dataCriacao) {
         this.tipo = tipo;
         this.descricao = descricao;
         this.status = status;
@@ -59,11 +55,11 @@ public class Solicitacao {
         this.id = id;
     }
 
-    public TipoSolicitacao getTipo() {
+    public TipoSolicitacaoAgendamento getTipo() {
         return tipo;
     }
 
-    public void setTipo(TipoSolicitacao tipo) {
+    public void setTipo(TipoSolicitacaoAgendamento tipo) {
         this.tipo = tipo;
     }
 
