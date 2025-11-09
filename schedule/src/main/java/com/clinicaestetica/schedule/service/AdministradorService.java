@@ -12,6 +12,8 @@ import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.repository.AgendamentoRepository;
 import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
+import com.clinicaestetica.schedule.model.Servico;
+import com.clinicaestetica.schedule.repository.ServicoRepository;
 import com.clinicaestetica.schedule.model.Solicitacao;
 import com.clinicaestetica.schedule.repository.SolicitacaoRepository;
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
@@ -29,6 +31,9 @@ public class AdministradorService {
 
     @Autowired
     private SolicitacaoRepository solicitacaoRepository;
+
+    @Autowired 
+    private ServicoRepository servicoRepository;
 
     public Profissional criarProfissional(Profissional profissional) {
         return profissionalRepository.save(profissional);
@@ -132,4 +137,39 @@ public class AdministradorService {
         return solicitacaoRepository.save(solicitacao);
     }
 
+    public Agendamento atualizarAgendamentoDireto(Long id, Agendamento agendamentoAtualizado) {
+        Agendamento agendamentoExistente = agendamentoRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Agendamento com id " + id + " não encontrado para edição."));
+
+        // 1. Atualiza Data/Hora
+        if (agendamentoAtualizado.getDataHora() != null) {
+            agendamentoExistente.setDataHora(agendamentoAtualizado.getDataHora());
+            // Atualiza status para ALTERADO se a hora foi modificada
+            if (agendamentoExistente.getStatus() != StatusAgendamento.CONCLUÍDO && 
+                agendamentoExistente.getStatus() != StatusAgendamento.CANCELADO) {
+                agendamentoExistente.setStatus(StatusAgendamento.ALTERADO);
+            }
+        }
+
+        // 2. Atualiza Status
+        if (agendamentoAtualizado.getStatus() != null) {
+            agendamentoExistente.setStatus(agendamentoAtualizado.getStatus());
+        }
+        
+        // 3. Atualiza Profissional (se um novo ID for fornecido)
+        if (agendamentoAtualizado.getProfissional() != null && agendamentoAtualizado.getProfissional().getIdUsuario() != null) {
+            Profissional novoProfissional = profissionalRepository.findById(agendamentoAtualizado.getProfissional().getIdUsuario())
+                .orElseThrow(() -> new NoSuchElementException("Profissional com ID " + agendamentoAtualizado.getProfissional().getIdUsuario() + " não encontrado para edição de agendamento."));
+            agendamentoExistente.setProfissional(novoProfissional);
+        }
+        
+        // 4. Atualiza Serviço (se um novo ID for fornecido)
+        if (agendamentoAtualizado.getServico() != null && agendamentoAtualizado.getServico().getId() != null) {
+            Servico novoServico = servicoRepository.findById(agendamentoAtualizado.getServico().getId())
+                .orElseThrow(() -> new NoSuchElementException("Serviço com ID " + agendamentoAtualizado.getServico().getId() + " não encontrado para edição de agendamento."));
+            agendamentoExistente.setServico(novoServico);
+        }
+
+        return agendamentoRepository.save(agendamentoExistente);
+    }
 }
