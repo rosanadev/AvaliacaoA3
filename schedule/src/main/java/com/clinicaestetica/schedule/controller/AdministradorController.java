@@ -1,9 +1,12 @@
 package com.clinicaestetica.schedule.controller;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,6 +44,34 @@ public class AdministradorController {
             return ResponseEntity.internalServerError().build();
         }
 
+    }
+
+    @GetMapping("/calendario")
+    public ResponseEntity<Map<String, List<Agendamento>>> getCalendarioCompleto(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
+        try {
+            Map<String, List<Agendamento>> calendario = administradorService.getCalendarioCompleto(dataInicio, dataFim);
+            return ResponseEntity.ok(calendario);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    // NOVO: Calendário de um profissional específico
+    @GetMapping("/calendario/profissional/{profissionalId}")
+    public ResponseEntity<List<Agendamento>> getCalendarioProfissional(
+            @PathVariable Long profissionalId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
+        try {
+            List<Agendamento> agendamentos = administradorService.getCalendarioProfissional(profissionalId, dataInicio, dataFim);
+            return ResponseEntity.ok(agendamentos);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PostMapping("/login")

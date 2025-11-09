@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,19 @@ public class AgendamentoService {
     // Listar todos
     public List<Agendamento> listarAgendamentos() {
         return agendamentoRepository.findAll();
+    }
+
+    // Listar por status
+    public List<Agendamento> listarPorStatus(StatusAgendamento status) {
+        return agendamentoRepository.findByStatus(status);
+    }
+
+    // Listar agendamentos passados (concluídos ou cancelados)
+    public List<Agendamento> listarAgendamentosPassados() {
+        return agendamentoRepository.findAll().stream()
+                .filter(a -> a.getStatus() == StatusAgendamento.CONCLUÍDO || 
+                             a.getStatus() == StatusAgendamento.CANCELADO)
+                .collect(Collectors.toList());
     }
 
     // Agendar novo serviço com pagamento parcial

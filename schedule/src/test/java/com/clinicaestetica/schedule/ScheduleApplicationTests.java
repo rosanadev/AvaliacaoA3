@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 
@@ -257,21 +258,16 @@ class ScheduleApplicationTests {
 
     @Test
     void testServicoServiceCriarServico() {
-        // Configura mock
         Servico servicoMock = criarServicoMock();
-        when(servicoService.criarServico(any(Servico.class))).thenReturn(org.springframework.http.ResponseEntity.ok(servicoMock)
-        );
+        when(servicoService.criarServico(any(Servico.class))).thenReturn(servicoMock);
 
- 		// Executa teste
         Servico novoServico = new Servico();
         novoServico.setNome("Servico Teste");
-        org.springframework.http.ResponseEntity<Servico> response = servicoService.criarServico(novoServico);
-        Servico servicoSalvo = response.getBody(); 
+        Servico servicoSalvo = servicoService.criarServico(novoServico);
 
         assertNotNull(servicoSalvo);
         assertEquals("Servico Teste", servicoSalvo.getNome());
-        assertEquals(org.springframework.http.HttpStatus.OK, response.getStatusCode()); 
-        System.out.println("TESTE: Servico criado com sucesso");
+        System.out.println("✓ TESTE: Servico criado com sucesso");
     }
 
     @Test
@@ -290,10 +286,10 @@ class ScheduleApplicationTests {
 
     @Test
     void testServicoServiceDeletarServico() {
-        // Configura mock - void method, não precisa thenReturn
-        // Apenas verifica que não lança exceção
+        doNothing().when(servicoService).deletarServico(1L);
+        
         assertDoesNotThrow(() -> servicoService.deletarServico(1L));
-        System.out.println("TESTE: Servico deletado sem erros");
+        System.out.println("✓ TESTE: Servico deletado sem erros");
     }
 
     // ========== TESTES DO AGENDAMENTOSERVICE ==========

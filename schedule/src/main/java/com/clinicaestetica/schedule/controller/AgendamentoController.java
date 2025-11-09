@@ -37,6 +37,27 @@ public class AgendamentoController {
         return new ResponseEntity<>(agendamentos, HttpStatus.OK);
     }
 
+    @GetMapping("/historico")
+    public ResponseEntity<List<Agendamento>> listarHistorico(
+            @RequestParam(required = false) StatusAgendamento status) {
+        List<Agendamento> historico;
+        
+        if (status != null) {
+            historico = agendamentoService.listarPorStatus(status);
+        } else {
+            historico = agendamentoService.listarAgendamentos();
+        }
+        
+        return new ResponseEntity<>(historico, HttpStatus.OK);
+    }
+
+    // NOVO: Endpoint para agendamentos passados (concluídos ou cancelados)
+    @GetMapping("/passados")
+    public ResponseEntity<List<Agendamento>> listarAgendamentosPassados() {
+        List<Agendamento> passados = agendamentoService.listarAgendamentosPassados();
+        return new ResponseEntity<>(passados, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Agendamento> agendarServico(@Valid @RequestBody Agendamento agendamento) {
         Agendamento novoAgendamento = agendamentoService.agendarServico(agendamento);

@@ -1,9 +1,15 @@
 package com.clinicaestetica.schedule.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.clinicaestetica.schedule.model.Agendamento;
@@ -183,5 +189,51 @@ public class AdministradorService {
         }
 
         return agendamentoRepository.save(agendamentoExistente);
+    }
+
+    public Map<String, List<Agendamento>> getCalendarioCompleto(LocalDate dataInicio, LocalDate dataFim) {
+        List<Agendamento> todosAgendamentos;
+        
+        if (dataInicio != null && dataFim != null) {
+            LocalDateTime inicio = dataInicio.atStartOfDay();
+            LocalDateTime fim = dataFim.atTime(LocalTime.MAX);
+            todosAgendamentos = agendamentoRepository.findAll().stream()
+                    .filter(a -> !a.getDataHora().isBefore(inicio) && !a.getDataHora().isAfter(fim))
+                    .collect(Collectors.toList());
+        } else {
+            todosAgendamentos = agendamentoRepository.findAll();
+        }
+        
+        // Agrupar por profissional
+        Map<String, List<Agendamento>> calendarioPorProfissional = new HashMap<>();
+        
+        for (Agendamento agendamento : todosAgendamentos) {
+            String nomeProfissional = agendamento.getProfissional().getNome();
+            calendarioPorProfissional
+                    .computeIfAbsent(nomeProfissional, k -> new java.util.ArrayList<>())
+                    .add(agendamento);
+        }
+        
+        return calendarioPorProfissional;
+    }
+
+    // Calendário de um profissional específico
+    public List<Agendamento> getCalendarioProfissional(Long profissionalId, LocalDate dataInicio, LocalDate dataFim) {
+        Profissional profissional = profissionalRepository.findById(profissionalId)
+                .orElseThrow(() -> new NoSuchElementException("Profissional com id " + profissionalId + " não encontrado"));
+        
+        List<Agendamento> agendamentos = agendamentoRepository.findAll().stream()
+                .filter(a -> a.getProfissional().getIdUsuario().equals(profissionalId))
+                .collect(Collectors.toList());
+        
+        if (dataInicio != null && dataFim != null) {
+            LocalDateTime inicio = dataInicio.atStartOfDay();
+            LocalDateTime fim = dataFim.atTime(LocalTime.MAX);
+            agendamentos = agendamentos.stream()
+                    .filter(a -> !a.getDataHora().isBefore(inicio) && !a.getDataHora().isAfter(fim))
+                    .collect(Collectors.toList());
+        }
+        
+        return agendamentos;
     }
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,6 +29,9 @@ public class Especialidade {
         inverseJoinColumns = @JoinColumn(name = "servico_id") // FK de Servico
     )
     private Set<Servico> servicos = new HashSet<>();
+
+
+    public Especialidade() {} 
 
     public Especialidade(String nome, String descricao) {
         this.nome = nome;

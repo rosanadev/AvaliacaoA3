@@ -7,8 +7,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-
-import com.clinicaestetica.schedule.service.ProfissionalService;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity

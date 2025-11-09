@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
 import com.clinicaestetica.schedule.enums.TipoSolicitacaoAgendamento;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class Solicitacao {
@@ -31,6 +32,7 @@ public class Solicitacao {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "agendamento_id", nullable = false)
+    @JsonBackReference(value = "agendamento-solicitacoes") 
     private Agendamento agendamento;
     @NotNull
     @ManyToOne
