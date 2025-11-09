@@ -1,13 +1,17 @@
 package com.clinicaestetica.schedule.model;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
-import com.clinicaestetica.schedule.enums.TipoSolicitacao; // Adicionei a importação para ser mais claro
+import com.clinicaestetica.schedule.enums.TipoSolicitacaoAgendamento;
 
 @Entity
 public class Solicitacao {
@@ -16,7 +20,7 @@ public class Solicitacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private TipoSolicitacao tipo; // Usando a enum que definimos
+    private TipoSolicitacaoAgendamento tipo; // Usando a enum que definimos
     
     private String descricao;
     @NotNull
@@ -37,7 +41,7 @@ public class Solicitacao {
     }
 
     // Construtor completo
-    public Solicitacao(TipoSolicitacao tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional, LocalDateTime dataCriacao) {
+    public Solicitacao(TipoSolicitacaoAgendamento tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional, LocalDateTime dataCriacao) {
         this.tipo = tipo;
         this.descricao = descricao;
         this.status = status;
