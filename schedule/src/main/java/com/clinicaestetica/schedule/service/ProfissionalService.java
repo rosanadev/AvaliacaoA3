@@ -5,6 +5,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.clinicaestetica.schedule.model.Profissional;
+import com.clinicaestetica.schedule.model.Solicitacao;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
 import com.clinicaestetica.schedule.model.Agendamento;
 
@@ -34,6 +35,10 @@ public class ProfissionalService {
         return profissional.getAgendamentos();
     }
 
+    public Set<Solicitacao> getSolicitacoesDoProfissional(long id) {
+        Profissional profissional = profissionalRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("Profissional com id " + id + " não encontrado"));
+        return profissional.getSolicitacoes();
+    }
 
-    
 }

@@ -129,12 +129,7 @@ public class AgendamentoService {
         return agendamentoRepository.findById(id);
     }
 
-<<<<<<< HEAD
      public Agendamento atualizarStatus(Long id, StatusAgendamento novoStatus) {
-=======
-    // Atualizar status
-    public Agendamento atualizarStatus(Long id, StatusAgendamento novoStatus) {
->>>>>>> master
         Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado."));
 
