@@ -19,14 +19,8 @@ public class ServicoService {
         return servicoRepository.findAll();
     }
 
-    public ResponseEntity<Servico> criarServico(@RequestBody Servico servico) {
-        try {
-            Servico savedServico = servicoRepository.save(servico);
-            return ResponseEntity.ok(savedServico);
-        } catch (Exception e) {
-            // Em um cenário real, você pode querer logar a exceção ou lançar uma exceção mais específica
-            return ResponseEntity.badRequest().build();
-        }
+    public Servico criarServico(Servico servico) {
+        return servicoRepository.save(servico);
     }
 
     public Servico getServico(Long id) { // Alterado para retornar Servico diretamente
