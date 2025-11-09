@@ -30,9 +30,10 @@ public class ServicoController {
 
     @PostMapping
     public ResponseEntity<Servico> criarServico(@Valid @RequestBody Servico servico) {
-            Servico savedServico = servicoService.criarServico(servico);
-            return new ResponseEntity<>(savedServico, HttpStatus.CREATED);
-        }
+        // Alterado para retornar HttpStatus.CREATED
+        Servico savedServico = servicoService.criarServico(servico).getBody(); // Pega o corpo do ResponseEntity
+        return new ResponseEntity<>(savedServico, HttpStatus.CREATED);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Servico> obterServicoPorId(@PathVariable Long id) {

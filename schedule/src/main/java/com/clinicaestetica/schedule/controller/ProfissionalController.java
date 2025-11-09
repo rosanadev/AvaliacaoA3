@@ -1,4 +1,5 @@
 package com.clinicaestetica.schedule.controller;
+
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,6 @@ public class ProfissionalController {
 
     private ProfissionalService profissionalService;
 
-    @PostMapping
-
     @GetMapping("/{id}")
     public ResponseEntity<Profissional> getProfissional(@PathVariable Long id) {
         Profissional profissional = profissionalService.getProfissional(id);
@@ -39,7 +38,7 @@ public class ProfissionalController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-    
+
     @GetMapping("/{id}/agendamentos")
     public ResponseEntity<Set<Agendamento>> getAgendamentosDoProfissional(@PathVariable long id) {
         Set<Agendamento> agendamentos = profissionalService.getAgendamentosDoProfissional(id);
