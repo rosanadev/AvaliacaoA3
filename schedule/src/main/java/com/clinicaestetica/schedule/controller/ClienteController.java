@@ -2,7 +2,6 @@ package com.clinicaestetica.schedule.controller;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.model.Cliente;
 import com.clinicaestetica.schedule.service.ClienteService;
@@ -42,10 +41,23 @@ public class ClienteController {
         Cliente cliente = clienteService.getCliente(id);
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
+    
     @GetMapping("/{id}/agendamentos")
-    public ResponseEntity<List<Agendamento>> getAgendamentosDoCliente(@PathVariable Long id) {
-        // Agora o service lança a exceção, o ControllerAdvice a captura
-        List<Agendamento> agendamentos = clienteService.getAgendamentosDoCliente(id);
+    public ResponseEntity<List<Agendamento>> getAgendamentosDoCliente(
+            @PathVariable Long id,
+            @RequestParam(required = false) String filtro) {
+        
+        List<Agendamento> agendamentos;
+        
+        if ("futuros".equalsIgnoreCase(filtro)) {
+            agendamentos = clienteService.getAgendamentosFuturos(id);
+        } else if ("passados".equalsIgnoreCase(filtro)) {
+            agendamentos = clienteService.getAgendamentosPassados(id);
+        } else {
+            // Sem filtro: retorna todos
+            agendamentos = clienteService.getAgendamentosDoCliente(id);
+        }
+        
         return new ResponseEntity<>(agendamentos, HttpStatus.OK);
     }
 
