@@ -3,11 +3,9 @@ package com.clinicaestetica.schedule.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.repository.AgendamentoRepository;
 import com.clinicaestetica.schedule.model.Profissional;
@@ -16,6 +14,8 @@ import com.clinicaestetica.schedule.model.Servico;
 import com.clinicaestetica.schedule.repository.ServicoRepository;
 import com.clinicaestetica.schedule.model.Solicitacao;
 import com.clinicaestetica.schedule.repository.SolicitacaoRepository;
+import com.clinicaestetica.schedule.repository.AdministradorRepository; 
+import com.clinicaestetica.schedule.model.Administrador;
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
 import com.clinicaestetica.schedule.enums.TipoSolicitacaoAgendamento;
 import com.clinicaestetica.schedule.enums.StatusAgendamento;
@@ -25,6 +25,9 @@ public class AdministradorService {
 
     @Autowired
     private ProfissionalRepository profissionalRepository;
+
+    @Autowired
+    private AdministradorRepository administradorRepository;
 
     @Autowired
     private AgendamentoRepository agendamentoRepository;
@@ -37,6 +40,15 @@ public class AdministradorService {
 
     public Profissional criarProfissional(Profissional profissional) {
         return profissionalRepository.save(profissional);
+    }
+
+    public Optional<Administrador> login(String email, String senha) {
+        Optional<Administrador> adminOptional = administradorRepository.findByEmail(email);
+
+        if (adminOptional.isPresent() && adminOptional.get().getSenha().equals(senha)) {
+            return adminOptional;
+        }
+        return Optional.empty();
     }
     
     public Profissional deletarProfissional(Long id){ 

@@ -2,7 +2,7 @@ package com.clinicaestetica.schedule.controller;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.model.Solicitacao;
+import com.clinicaestetica.schedule.model.Administrador;
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.service.AdministradorService;
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
@@ -41,6 +41,19 @@ public class AdministradorController {
             return ResponseEntity.internalServerError().build();
         }
 
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Administrador> login(@RequestBody Administrador administrador) {
+        Optional<Administrador> adminOptional = administradorService.login(
+            administrador.getEmail(), administrador.getSenha()
+        );
+    
+        if (adminOptional.isPresent()) {
+            return new ResponseEntity<>(adminOptional.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PostMapping("/profissionais")
