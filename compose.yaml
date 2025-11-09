@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Banco de dados MySQL
+  mysql-db:
+    image: mysql:8.0
+    container_name: spring-mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: senha
+      MYSQL_DATABASE: clinica_rosa_beauty
+      MYSQL_USER: dev_clinica
+      MYSQL_PASSWORD: senha
+    ports:
+      - "3306:3306"
+    networks:
+      - spring-network
+
+  # Aplicação Spring Boot
+  spring-app:
+    build:
+      context: ./schedule
+      dockerfile: Dockerfile
+    container_name: spring-boot-app
+    command: "mvn spring-boot:run"
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/clinica_rosa_beauty
+      SPRING_DATASOURCE_USERNAME: dev_clinica
+      SPRING_DATASOURCE_PASSWORD: senha
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql-db
+    networks:
+      - spring-network
+
+networks:
+  spring-network:
+    driver: bridge
