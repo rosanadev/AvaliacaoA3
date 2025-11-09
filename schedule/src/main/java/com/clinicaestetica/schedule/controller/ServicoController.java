@@ -30,8 +30,7 @@ public class ServicoController {
 
     @PostMapping
     public ResponseEntity<Servico> criarServico(@Valid @RequestBody Servico servico) {
-        // Alterado para retornar HttpStatus.CREATED
-        Servico savedServico = servicoService.criarServico(servico).getBody(); // Pega o corpo do ResponseEntity
+        Servico savedServico = servicoService.criarServico(servico);
         return new ResponseEntity<>(savedServico, HttpStatus.CREATED);
     }
 
