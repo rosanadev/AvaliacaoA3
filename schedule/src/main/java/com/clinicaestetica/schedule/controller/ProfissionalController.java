@@ -39,12 +39,6 @@ public class ProfissionalController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Profissional> getProfissional(@PathVariable long id) {
-        Profissional profissional = profissionalService.getProfissional(id);
-        return new ResponseEntity<>(profissional, HttpStatus.OK);
-    }
-
     @GetMapping("/{id}/agendamentos")
     public ResponseEntity<Set<Agendamento>> getAgendamentosDoProfissional(@PathVariable long id) {
         Set<Agendamento> agendamentos = profissionalService.getAgendamentosDoProfissional(id);
