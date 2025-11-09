@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.model.Solicitacao;
+import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.service.AdministradorService;
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
 
@@ -100,8 +101,30 @@ public class AdministradorController {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
+            }
+        }
+
+    @PutMapping("/agendamentos/{id}")
+    public ResponseEntity<Agendamento> atualizarAgendamentoDireto(@PathVariable Long id, @RequestBody Agendamento agendamentoAtualizado) {
+        try {
+            Agendamento agendamento = administradorService.atualizarAgendamentoDireto(id, agendamentoAtualizado);
+            return ResponseEntity.ok(agendamento);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
-    
+    @DeleteMapping("/agendamentos/{id}")
+    public ResponseEntity<Void> deletarAgendamento(@PathVariable Long id) {
+        try {
+            administradorService.deletarAgendamento(id);
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
