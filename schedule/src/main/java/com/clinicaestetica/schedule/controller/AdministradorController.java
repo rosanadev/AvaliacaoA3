@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.model.Solicitacao;
 import com.clinicaestetica.schedule.service.AdministradorService;
+import com.clinicaestetica.schedule.enums.StatusSolicitacao;
 
 @RestController
 @RequestMapping("/administrador")
@@ -82,5 +85,23 @@ public class AdministradorController {
             return ResponseEntity.internalServerError().build();
         }
 }
+
+    @PatchMapping("/solicitacoes/{id}/status")
+    public ResponseEntity<Solicitacao> processarSolicitacao(
+            @PathVariable Long id,
+            @RequestParam StatusSolicitacao novoStatus) {
+        try {
+            Solicitacao solicitacaoAtualizada = administradorService.processarSolicitacao(id, novoStatus);
+            return ResponseEntity.ok(solicitacaoAtualizada);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            // Regra de negócio violada (ex: tentar mudar para PENDENTE, ou já foi processada)
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     
 }
