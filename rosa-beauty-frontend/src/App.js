@@ -379,7 +379,7 @@ const SistemaAgendamento = () => {
             ) : (
               <div className="space-y-4">
                 {agendamentos.map(ag => (
-                  <div key={ag.id || ag.idAgendamento} className="border rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition">
+                  <div key={ag.id} className="border rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition">
                     <div>
                       <h3 className="font-bold">{ag.servico?.nome || 'Serviço'}</h3>
                       <p className="text-sm text-gray-600">
@@ -414,123 +414,140 @@ const SistemaAgendamento = () => {
     );
   };
 
-  const NovoAgendamento = () => {
-    const [formData, setFormData] = useState({
-      servicoId: '',
-      profissionalId: '1',
-      dataHora: '',
-      pagamentoParcial: true
-    });
+  // SUBSTITUIR O COMPONENTE NovoAgendamento no App.js
 
-    const handleAgendar = () => {
-      if (!formData.servicoId || !formData.dataHora) {
-        mostrarMensagem('Selecione o serviço e a data/hora', 'erro');
-        return;
+const NovoAgendamento = () => {
+  const [formData, setFormData] = useState({
+    servicoId: '',
+    profissionalId: '',
+    dataHora: '',
+    pagamentoParcial: true
+  });
+  const [profissionais, setProfissionais] = useState([]);
+
+  // Carregar profissionais quando o componente montar
+  useEffect(() => {
+    const carregarProfissionais = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/administrador/profissionais`);
+        const data = await response.json();
+        setProfissionais(data);
+      } catch (error) {
+        console.error('Erro ao carregar profissionais:', error);
       }
-
-      const agendamento = {
-        cliente: { idUsuario: usuarioLogado.idUsuario },
-        servico: { id: parseInt(formData.servicoId) },
-        profissional: { idUsuario: parseInt(formData.profissionalId) },
-        dataHora: formData.dataHora,
-        pagamentoParcial: formData.pagamentoParcial,
-        status: 'AGENDADO'
-      };
-      criarAgendamento(agendamento);
     };
+    carregarProfissionais();
+  }, []);
 
-    return (
-      <div className="min-h-screen bg-gray-50 p-4">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-pink-600 mb-6">Novo Agendamento</h2>
-          
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Serviço *
-              </label>
-              <select
-                value={formData.servicoId}
-                onChange={(e) => setFormData({...formData, servicoId: e.target.value})}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 outline-none"
-              >
-                <option value="">Selecione um serviço</option>
-                {servicos.map(s => (
-                  <option key={s.id} value={s.id}>
-                    {s.nome} - R$ {s.preco} ({s.duracaoEmMinutos || s.duracao_em_minutos} min)
-                  </option>
-                ))}
-              </select>
-            </div>
+  const handleAgendar = () => {
+    if (!formData.servicoId || !formData.dataHora || !formData.profissionalId) {
+      mostrarMensagem('Selecione o serviço, profissional e a data/hora', 'erro');
+      return;
+    }
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Data e Hora *
-              </label>
-              <input
-                type="datetime-local"
-                value={formData.dataHora}
-                onChange={(e) => setFormData({...formData, dataHora: e.target.value})}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 outline-none"
-              />
-            </div>
-
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <label className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  checked={formData.pagamentoParcial}
-                  onChange={(e) => setFormData({...formData, pagamentoParcial: e.target.checked})}
-                  className="mt-1 w-4 h-4 text-pink-600"
-                />
-                <div>
-                  <span className="text-sm font-medium text-gray-900 block">
-                    Pagamento Parcelado
-                  </span>
-                  <span className="text-xs text-gray-600">
-                    Pague 50% agora e 50% no dia do serviço
-                  </span>
-                </div>
-              </label>
-            </div>
-
-            <div className="flex gap-4 pt-4">
-              <button
-                onClick={() => setTelaAtual('dashboard')}
-                className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition font-medium"
-              >
-                Voltar
-              </button>
-              <button
-                onClick={handleAgendar}
-                disabled={loading}
-                className="flex-1 bg-pink-600 text-white py-3 rounded-lg hover:bg-pink-700 transition disabled:opacity-50 font-medium"
-              >
-                {loading ? 'Agendando...' : 'Confirmar Agendamento'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    const agendamento = {
+      cliente: { idUsuario: usuarioLogado.idUsuario },
+      servico: { id: parseInt(formData.servicoId) },
+      profissional: { idUsuario: parseInt(formData.profissionalId) },
+      dataHora: formData.dataHora,
+      pagamentoParcial: formData.pagamentoParcial,
+      status: 'AGENDADO'
+    };
+    criarAgendamento(agendamento);
   };
 
   return (
-    <div>
-      {mensagem && (
-        <div className={`fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${
-          mensagem.tipo === 'sucesso' ? 'bg-green-500' : 'bg-red-500'
-        } text-white font-medium`}>
-          {mensagem.texto}
-        </div>
-      )}
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8">
+        <h2 className="text-2xl font-bold text-pink-600 mb-6">Novo Agendamento</h2>
+        
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Serviço *
+            </label>
+            <select
+              value={formData.servicoId}
+              onChange={(e) => setFormData({...formData, servicoId: e.target.value})}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 outline-none"
+            >
+              <option value="">Selecione um serviço</option>
+              {servicos.map(s => (
+                <option key={s.id} value={s.id}>
+                  {s.nome} - R$ {s.preco} ({s.duracaoEmMinutos || s.duracao_em_minutos} min)
+                </option>
+              ))}
+            </select>
+          </div>
 
-      {telaAtual === 'login' && <TelaLogin />}
-      {telaAtual === 'cadastro' && <TelaCadastro />}
-      {telaAtual === 'dashboard' && <Dashboard />}
-      {telaAtual === 'novo-agendamento' && <NovoAgendamento />}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Profissional *
+            </label>
+            <select
+              value={formData.profissionalId}
+              onChange={(e) => setFormData({...formData, profissionalId: e.target.value})}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 outline-none"
+            >
+              <option value="">Selecione um profissional</option>
+              {profissionais.map(p => (
+                <option key={p.idUsuario} value={p.idUsuario}>
+                  {p.nome} {p.registroProfissional ? `(${p.registroProfissional})` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Data e Hora *
+            </label>
+            <input
+              type="datetime-local"
+              value={formData.dataHora}
+              onChange={(e) => setFormData({...formData, dataHora: e.target.value})}
+              min={new Date().toISOString().slice(0, 16)}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 outline-none"
+            />
+          </div>
+
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={formData.pagamentoParcial}
+                onChange={(e) => setFormData({...formData, pagamentoParcial: e.target.checked})}
+                className="mt-1 w-4 h-4 text-pink-600"
+              />
+              <div>
+                <span className="text-sm font-medium text-gray-900 block">
+                  Pagamento Parcelado
+                </span>
+                <span className="text-xs text-gray-600">
+                  Pague 50% agora e 50% no dia do serviço
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <button
+              onClick={() => setTelaAtual('dashboard')}
+              className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition font-medium"
+            >
+              Voltar
+            </button>
+            <button
+              onClick={handleAgendar}
+              disabled={loading}
+              className="flex-1 bg-pink-600 text-white py-3 rounded-lg hover:bg-pink-700 transition disabled:opacity-50 font-medium"
+            >
+              {loading ? 'Agendando...' : 'Confirmar Agendamento'}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default SistemaAgendamento;
+ };
+}; export default SistemaAgendamento;
