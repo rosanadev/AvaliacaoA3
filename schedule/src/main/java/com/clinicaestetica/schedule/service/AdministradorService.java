@@ -159,15 +159,19 @@ public class AdministradorService {
         Agendamento agendamentoExistente = agendamentoRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Agendamento com id " + id + " não encontrado para edição."));
 
-        // 1. Atualiza Data/Hora
         if (agendamentoAtualizado.getDataHora() != null) {
-            agendamentoExistente.setDataHora(agendamentoAtualizado.getDataHora());
-            // Atualiza status para ALTERADO se a hora foi modificada
-            if (agendamentoExistente.getStatus() != StatusAgendamento.CONCLUÍDO && 
-                agendamentoExistente.getStatus() != StatusAgendamento.CANCELADO) {
-                agendamentoExistente.setStatus(StatusAgendamento.ALTERADO);
+            // Verificar conflito de horário
+            boolean conflito = agendamentoRepository.existsByProfissionalIdUsuarioAndDataHoraAndStatusNot(
+                agendamentoExistente.getProfissional().getIdUsuario(),
+                agendamentoAtualizado.getDataHora(),
+                StatusAgendamento.CANCELADO
+            );
+            if (conflito) {
+                throw new IllegalArgumentException("Horário indisponível para o profissional.");
             }
+            agendamentoExistente.setDataHora(agendamentoAtualizado.getDataHora());
         }
+        
 
         // 2. Atualiza Status
         if (agendamentoAtualizado.getStatus() != null) {
