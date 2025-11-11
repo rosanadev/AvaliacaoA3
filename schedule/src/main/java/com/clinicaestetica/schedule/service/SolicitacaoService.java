@@ -95,7 +95,8 @@ public class SolicitacaoService {
         Solicitacao solicitacao = new Solicitacao();
         solicitacao.setAgendamento(agendamento);
         solicitacao.setProfissional(profissional);
-        solicitacao.setDescricao(dto.getDescricao() + " | Nova Data Sugerida: " + dto.getNovaDataHora()); 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        solicitacao.setDescricao(dto.getDescricao() + " | Nova Data/Hora Sugerida: " + dto.getNovaDataHora().format(formatter));
         solicitacao.setDataCriacao(LocalDateTime.now());
         solicitacao.setTipo(TipoSolicitacaoAgendamento.ALTERAR); 
         solicitacao.setStatus(StatusSolicitacao.PENDENTE);
