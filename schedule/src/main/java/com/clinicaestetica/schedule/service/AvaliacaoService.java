@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.NoSuchElementException;
 
 
@@ -37,9 +36,11 @@ public class AvaliacaoService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
                 "Este agendamento já foi avaliado.");
         }
+
+        avaliacao.setCliente(agendamento.getCliente());
+        avaliacao.setAgendamento(agendamento);
                 
         // Associar o agendamento à avaliação e salvar
-        avaliacao.setAgendamento(agendamento);
         return avaliacaoRepository.save(avaliacao);
-        }
     }
+}
