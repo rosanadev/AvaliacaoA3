@@ -39,6 +39,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Run integration tests
+        working-directory: ./schedule
         run: mvn -B clean verify
         env:
           SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/clinica_estetica
