@@ -31,7 +31,13 @@ public class AvaliacaoService {
         if (agendamento.getStatus() != StatusAgendamento.CONCLUÍDO) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar um agendamento que não esteja concluído.");
         }
-        
+
+        // Adicionar verificação:
+        if (agendamento.getAvaliacao() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Este agendamento já foi avaliado.");
+        }
+                
         // Associar o agendamento à avaliação e salvar
         avaliacao.setAgendamento(agendamento);
         return avaliacaoRepository.save(avaliacao);
