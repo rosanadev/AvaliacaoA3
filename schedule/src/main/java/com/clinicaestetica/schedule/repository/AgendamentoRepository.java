@@ -13,10 +13,11 @@ import com.clinicaestetica.schedule.model.Agendamento;
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
 
     //Verificar se já existe agendamento no mesmo horário para o profissional
-    boolean existsByProfissionalIdUsuarioAndDataHoraAndStatusNot(
-            Long profissionalId,
-            LocalDateTime dataHora,
-            StatusAgendamento statusIgnorar
+    boolean existsByProfissionalIdUsuarioAndDataHoraAndStatusNotAndIdNot(
+        Long profissionalId,
+        LocalDateTime dataHora,
+        StatusAgendamento statusIgnorar,
+        Long agendamentoId
     );
 
     @Query("SELECT a FROM Agendamento a WHERE a.cliente.idUsuario = :clienteId AND a.dataHora > :dataAtual ORDER BY a.dataHora ASC")
