@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Servicos from './pages/Servicos';
+import Cadastro from './pages/Cadastro';
 
 // Componente de Rota Privada
 const PrivateRoute = ({ children, tipoPermitido }) => {
@@ -89,6 +90,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/servicos" element={<Servicos />} />
+          <Route path="/cadastro" element={<Cadastro />} />
 
           {/* Rotas do Cliente */}
           <Route
