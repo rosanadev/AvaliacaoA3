@@ -59,6 +59,10 @@ public class AgendamentoService {
             throw new RuntimeException("Cliente não encontrado.");
         }
 
+        if (agendamento.getDataHora().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Não é possível agendar em data passada.");
+        }
+
         Cliente cliente = clienteRepository.findById(agendamento.getCliente().getIdUsuario())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
 
