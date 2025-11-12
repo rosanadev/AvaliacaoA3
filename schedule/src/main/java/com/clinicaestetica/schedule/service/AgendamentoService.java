@@ -59,6 +59,11 @@ public class AgendamentoService {
             throw new RuntimeException("Cliente não encontrado.");
         }
 
+        int hora = agendamento.getDataHora().getHour();
+        if (hora < 8 || hora >= 18) {
+            throw new RuntimeException("Horário fora do expediente (8h-18h).");
+        }
+
         if (agendamento.getDataHora().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Não é possível agendar em data passada.");
         }
