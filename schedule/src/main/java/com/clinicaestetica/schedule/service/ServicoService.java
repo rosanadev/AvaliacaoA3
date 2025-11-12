@@ -21,12 +21,10 @@ public class ServicoService {
     }
 
     public Set<Profissional> getProfissionaisPorServico(Long id) {
-        // 1. Encontra o serviço ou lança exceção
         Servico servico = servicoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Serviço com ID " + id + " não encontrado"));
 
-        // 2. Navega pelas especialidades do serviço e coleta os profissionais
-        //
+
         return servico.getEspecialidades().stream() // Stream<Especialidade>
                 .flatMap(especialidade -> especialidade.getProfissionais().stream()) // Stream<Profissional>
                 .collect(Collectors.toSet()); // Coleta em um Set para evitar duplicatas

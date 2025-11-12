@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { servicoAPI } from '../api/services';
+import { useAuth } from '../context/AuthContext';
 
 const Servicos = () => {
+  const { isAuthenticated } = useAuth();
   const [servicos, setServicos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -135,7 +137,7 @@ const Servicos = () => {
                   </div>
 
                   <Link
-                    to="/login"
+                    to={isAuthenticated ? `/agendar/${servico.id}` : "/login"} // <--- LINHA MODIFICADA
                     className="block w-full text-center bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
                   >
                     Agendar

@@ -10,9 +10,13 @@ const api = axios.create({
 // Interceptor para adicionar token em todas as requisições
 api.interceptors.request.use(
   (config) => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user.idUsuario) {
-      config.headers['X-User-Id'] = user.idUsuario;
+
+    const userItem = localStorage.getItem('user');
+    if (userItem && userItem !== "null") {
+      const user = JSON.parse(userItem);
+      if (user.idUsuario) {
+        config.headers['X-User-Id'] = user.idUsuario;
+      }
     }
     return config;
   },
@@ -21,14 +25,11 @@ api.interceptors.request.use(
   }
 );
 
-// Interceptor para tratar erros
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('user');
-      window.location.href = '/login';
-    }
+
     return Promise.reject(error);
   }
 );

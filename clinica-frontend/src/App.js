@@ -7,6 +7,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Servicos from './pages/Servicos';
 import Cadastro from './pages/Cadastro';
+import Agendar from './pages/Agendar';
+import ClienteDashboard from './pages/dashboard/ClienteDashboard';
 
 // Componente de Rota Privada
 const PrivateRoute = ({ children, tipoPermitido }) => {
@@ -97,7 +99,15 @@ function App() {
             path="/cliente/dashboard"
             element={
               <PrivateRoute tipoPermitido="cliente">
-                <DashboardPlaceholder tipo="cliente" />
+                <ClienteDashboard /> 
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/agendar/:servicoId"
+            element={
+              <PrivateRoute tipoPermitido="cliente">
+                <Agendar />
               </PrivateRoute>
             }
           />

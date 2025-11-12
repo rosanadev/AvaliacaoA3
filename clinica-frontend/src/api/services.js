@@ -23,6 +23,11 @@ export const servicoAPI = {
   deletar: async (id) => {
     await api.delete(`/servicos/${id}`);
   },
+
+  listarProfissionaisPorServico: async (id) => {
+    const response = await api.get(`/servicos/${id}/profissionais`);
+    return response.data;
+  },
 };
 
 export const clienteAPI = {
