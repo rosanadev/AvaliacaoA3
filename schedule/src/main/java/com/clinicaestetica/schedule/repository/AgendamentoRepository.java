@@ -12,24 +12,26 @@ import com.clinicaestetica.schedule.model.Agendamento;
 @Repository
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
 
-    //Verificar se já existe agendamento no mesmo horário para o profissional
-    boolean existsByProfissionalIdUsuarioAndDataHoraAndStatusNotAndIdNot(
-        Long profissionalId,
-        LocalDateTime dataHora,
-        StatusAgendamento statusIgnorar,
-        Long agendamentoId
+    // Verifica se já existe agendamento no mesmo horário para o profissional
+    boolean existsByProfissionalIdUsuarioAndDataHoraAndStatusNot(
+            Long profissionalId,
+            LocalDateTime dataHora,
+            StatusAgendamento statusIgnorar
     );
 
     @Query("SELECT a FROM Agendamento a WHERE a.cliente.idUsuario = :clienteId AND a.dataHora > :dataAtual ORDER BY a.dataHora ASC")
     List<Agendamento> findAgendamentosFuturos(@Param("clienteId") Long clienteId, @Param("dataAtual") LocalDateTime dataAtual);
 
-    //  Buscar agendamentos passados de um cliente
+    // Buscar agendamentos passados de um cliente
     @Query("SELECT a FROM Agendamento a WHERE a.cliente.idUsuario = :clienteId AND a.dataHora <= :dataAtual ORDER BY a.dataHora DESC")
     List<Agendamento> findAgendamentosPassados(@Param("clienteId") Long clienteId, @Param("dataAtual") LocalDateTime dataAtual);
 
-    //Buscar agendamentos por status
+    // Buscar agendamentos por status
     List<Agendamento> findByStatus(StatusAgendamento status);
 
-    //Buscar agendamentos por profissional e status
+    // Buscar agendamentos por profissional e status
     List<Agendamento> findByProfissionalIdUsuarioAndStatus(Long profissionalId, StatusAgendamento status);
 }
+
+
+
