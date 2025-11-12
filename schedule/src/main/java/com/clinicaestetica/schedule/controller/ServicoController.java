@@ -1,5 +1,6 @@
 package com.clinicaestetica.schedule.controller;
 
+import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.model.Servico;
 import com.clinicaestetica.schedule.service.ServicoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import java.util.Set;
+
 import jakarta.validation.Valid;
 
 @RestController // Esta anotação diz ao Spring que esta classe é uma API que irá responder a requisições web.
@@ -46,5 +49,12 @@ public class ServicoController {
         // Agora o service lança a exceção, o ControllerAdvice a captura
         servicoService.deletarServico(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}/profissionais")
+    public ResponseEntity<Set<Profissional>> listarProfissionaisPorServico(@PathVariable Long id) {
+        // A exceção NoSuchElementException será capturada pelo GlobalExceptionHandler
+        Set<Profissional> profissionais = servicoService.getProfissionaisPorServico(id);
+        return new ResponseEntity<>(profissionais, HttpStatus.OK);
     }
 }

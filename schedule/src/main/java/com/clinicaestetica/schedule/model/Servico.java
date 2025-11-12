@@ -48,9 +48,7 @@ public class Servico {
         this.preco = preco;
         this.duracao_em_minutos = duracao_em_minutos;
 
-    } // O ID não faz parte do construtor porque ele é gerado automaticamente pelo database
-
-    //Getters e setters
+    } 
 
     public Long getId() {
         return id;
@@ -90,6 +88,14 @@ public class Servico {
 
     public void setDuracaoEmMinutos (int duracao_em_minutos) {
         this.duracao_em_minutos = duracao_em_minutos;
+    }
+
+    public Set<Especialidade> getEspecialidades() {
+        return especialidades;
+    }
+    
+    public void setEspecialidades(Set<Especialidade> especialidades) {
+        this.especialidades = especialidades;
     }
 
 }
