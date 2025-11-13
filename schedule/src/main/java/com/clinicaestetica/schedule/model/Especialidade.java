@@ -22,8 +22,8 @@ public class Especialidade {
     private String nome;
     private String descricao;
 
-    @ManyToMany(mappedBy = "especialidades")
     @JsonIgnore
+    @ManyToMany(mappedBy = "especialidades")
     private List<Profissional> profissionais = new ArrayList<>();
     
     @ManyToMany

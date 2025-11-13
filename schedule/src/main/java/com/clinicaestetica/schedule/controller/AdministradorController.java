@@ -179,7 +179,7 @@ public class AdministradorController {
         return new ResponseEntity<>(especialidade, HttpStatus.OK);
     }
 
-    // A rota agora é: /administrador + /especialidades/{id}/profissionais/{id}
+    // A rota é: /administrador + /especialidades/{id}/profissionais/{id}
     @PutMapping("/especialidades/{especialidadeId}/profissionais/{profissionalId}")
     public ResponseEntity<Profissional> associarProfissional(@PathVariable Long especialidadeId, @PathVariable Long profissionalId) {
         Profissional profissional = administradorService.associarProfissional(especialidadeId, profissionalId);

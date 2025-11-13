@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { profissionalAPI } from '../../api/services';
+import { profissionalAPI, solicitacaoAPi} from '../../api/services';
 import { Link } from 'react-router-dom';
 
 // Navbar do Profissional
@@ -44,18 +44,11 @@ const ProfissionalDashboard = () => {
     setLoading(true);
     setError('');
     try {
-      const dados = await profissionalAPI.listarAgendamentos(user.idUsuario);
-      // Converter Set para Array se necessário
-      const agendamentosArray = Array.isArray(dados) ? dados : Array.from(dados);
-      
-      // Ordenar por data
-      const agendamentosOrdenados = agendamentosArray.sort((a, b) => 
-        new Date(a.dataHora) - new Date(b.dataHora)
-      );
-      
-      setAgendamentos(agendamentosOrdenados);
+      const futuros = await profissionalAPI.listarAgendamentos(user.idUsuario, null, null);
+      setAgendamentos(futuros || []); 
     } catch (err) {
       setError('Erro ao carregar agenda.');
+      setAgendamentos([]); 
       console.error(err);
     } finally {
       setLoading(false);

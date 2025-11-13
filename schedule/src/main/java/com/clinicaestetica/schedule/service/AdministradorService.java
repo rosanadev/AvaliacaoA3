@@ -269,6 +269,5 @@ public class AdministradorService {
         profissional.getEspecialidades().add(especialidade);
         return profissionalRepository.save(profissional);
     }
-    
 
 }

@@ -262,12 +262,14 @@ const ClienteDashboard = () => {
     setError('');
     try {
       const futuros = await clienteAPI.listarAgendamentos(user.idUsuario, 'futuros');
-      setAgendamentosFuturos(futuros);
+      setAgendamentosFuturos(futuros || []); 
 
       const passados = await clienteAPI.listarAgendamentos(user.idUsuario, 'passados');
-      setAgendamentosPassados(passados);
+      setAgendamentosPassados(passados || []); 
     } catch (err) {
       setError('Erro ao carregar agendamentos.');
+      setAgendamentosFuturos([]); 
+      setAgendamentosPassados([]);
       console.error(err);
     } finally {
       setLoading(false);

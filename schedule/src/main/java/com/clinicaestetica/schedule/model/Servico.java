@@ -23,19 +23,25 @@ public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank(message = "O nome do serviço não pode estar em branco")
     @Size(min = 3, max = 100, message = "O nome do serviço deve ter entre 3 e 100 caracteres")
     private String nome;
+
     @NotBlank(message = "A descrição do serviço não pode estar em branco")
     @Size(max = 500, message = "A descrição do serviço não pode exceder 500 caracteres")
     private String descricao;
+
     @NotNull(message = "O preço do serviço não pode ser nulo")
     @DecimalMin(value = "0.01", message = "O preço do serviço deve ser maior que zero")
     private BigDecimal preco;
+
     @Min(value = 1, message = "A duração do serviço deve ser de no mínimo 1 minuto")
     private int duracao_em_minutos;
+
     @OneToMany(mappedBy = "servico")
     private List<Agendamento> agendamentos = new ArrayList<>();
+    
     @JsonIgnore
     @ManyToMany(mappedBy = "servicos")
     private Set<Especialidade> especialidades = new HashSet<>();

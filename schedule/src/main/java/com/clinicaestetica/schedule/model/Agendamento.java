@@ -5,7 +5,9 @@ import java.util.Set;
 import com.clinicaestetica.schedule.enums.StatusAgendamento;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,9 +26,16 @@ public class Agendamento {
     private Long idAgendamento;
 
     private LocalDateTime dataHora;
+
     private StatusAgendamento status;
+
     private LocalDateTime dataCancelamento;
-    private boolean pagamentoParcial; // novo campo para pagamento 50%
+
+    private boolean pagamentoParcial;
+
+    @OneToOne(mappedBy = "agendamento", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference(value = "agendamento-pagamento")
+    private Pagamento pagamento;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
@@ -52,9 +61,6 @@ public class Agendamento {
 
     @OneToOne(mappedBy = "agendamento")
     private Avaliacao avaliacao;
-
-    @OneToOne(mappedBy = "agendamento")
-    private Pagamento pagamento;
 
     @OneToMany(mappedBy = "agendamento")
     @JsonManagedReference(value = "agendamento-solicitacoes")

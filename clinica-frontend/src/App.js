@@ -69,7 +69,7 @@ function App() {
             path="/profissional/dashboard"
             element={
               <PrivateRoute tipoPermitido="profissional">
-                <ProfissionalDashboard />
+                <ProfissionalDashboard /> 
               </PrivateRoute>
             }
           />
