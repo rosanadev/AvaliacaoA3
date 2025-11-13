@@ -20,14 +20,14 @@ public class ServicoService {
         return servicoRepository.findAll();
     }
 
-    public Set<Profissional> getProfissionaisPorServico(Long id) {
+    public List<Profissional> getProfissionaisPorServico(Long id) {
         Servico servico = servicoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Serviço com ID " + id + " não encontrado"));
 
-
-        return servico.getEspecialidades().stream() // Stream<Especialidade>
-                .flatMap(especialidade -> especialidade.getProfissionais().stream()) // Stream<Profissional>
-                .collect(Collectors.toSet()); // Coleta em um Set para evitar duplicatas
+        return servico.getEspecialidades().stream()
+                .flatMap(especialidade -> especialidade.getProfissionais().stream())
+                .distinct() // Remove duplicatas
+                .collect(Collectors.toList()); // ✅ Retorna List ao invés de Set
     }
 
     public Servico criarServico(Servico servico) {

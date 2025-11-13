@@ -7,6 +7,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -20,13 +22,16 @@ public class Profissional extends Usuario {
         joinColumns = @JoinColumn(name = "profissional_id"), // Chave estrangeira do Profissional
         inverseJoinColumns = @JoinColumn(name = "especialidade_id") // Chave estrangeira da Especialidade
     )
+    @JsonIgnore
     private Set<Especialidade> especialidades = new HashSet<>(); // Use Set para manter a consistência
 
     @OneToMany(mappedBy = "profissional")
     @JsonManagedReference(value = "profissional-agendamentos")
+    @JsonIgnore
     private Set<Agendamento> agendamentos = new HashSet<>();
 
     @OneToMany(mappedBy = "profissional")
+    @JsonIgnore
     private Set<Solicitacao> solicitacoes = new HashSet<>();
 
     // construtor vazio para JPA

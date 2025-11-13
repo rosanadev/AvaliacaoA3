@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { servicoAPI, agendamentoAPI } from '../api/services';
 
 const Agendar = () => {
-  const { servicoId } = useParams(); // Pega o ID do serviço da URL
+  const { servicoId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -14,38 +14,56 @@ const Agendar = () => {
   const [formData, setFormData] = useState({
     profissionalId: '',
     dataHora: '',
-    pagamentoParcial: true, //
+    pagamentoParcial: true,
   });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Carrega os dados do serviço e os profissionais disponíveis
   useEffect(() => {
-    const carregarDados = async () => {
-      try {
-        setLoading(true);
-        const dadosServico = await servicoAPI.buscarPorId(servicoId);
-        setServico(dadosServico);
-
-        const dadosProfissionais = await servicoAPI.listarProfissionaisPorServico(servicoId);
-        setProfissionais(dadosProfissionais);
-
-        if (dadosProfissionais.length > 0) {
-          // Pré-seleciona o primeiro profissional da lista
-          setFormData(f => ({ ...f, profissionalId: dadosProfissionais[0].idUsuario }));
-        }
-
-      } catch (err) {
-        setError('Erro ao carregar dados do agendamento.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
     carregarDados();
   }, [servicoId]);
+
+  const carregarDados = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      
+      const dadosServico = await servicoAPI.buscarPorId(servicoId);
+      setServico(dadosServico);
+
+      const response = await servicoAPI.listarProfissionaisPorServico(servicoId);
+      console.log('Profissionais retornados:', response);
+      
+      // ✅ CORREÇÃO: Converte Set ou qualquer estrutura para Array
+      let dadosProfissionais = [];
+      
+      if (Array.isArray(response)) {
+        dadosProfissionais = response;
+      } else if (response && typeof response === 'object') {
+        // Se for um Set ou objeto iterável
+        if (response[Symbol.iterator]) {
+          dadosProfissionais = Array.from(response);
+        } else {
+          // Se for um objeto com propriedades
+          dadosProfissionais = Object.values(response);
+        }
+      }
+      
+      setProfissionais(dadosProfissionais);
+
+      if (dadosProfissionais.length > 0) {
+        setFormData(f => ({ ...f, profissionalId: dadosProfissionais[0].idUsuario }));
+      }
+
+    } catch (err) {
+      console.error('Erro ao carregar dados:', err);
+      setError('Erro ao carregar dados do agendamento: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -66,8 +84,6 @@ const Agendar = () => {
     setError('');
 
     try {
-      // Monta o objeto DTO esperado pelo backend
-      //
       const agendamentoDTO = {
         cliente: { idUsuario: user.idUsuario },
         profissional: { idUsuario: parseInt(formData.profissionalId) },
@@ -78,22 +94,33 @@ const Agendar = () => {
 
       await agendamentoAPI.criar(agendamentoDTO);
       alert('Agendamento realizado com sucesso!');
-      navigate('/cliente/dashboard'); // Redireciona para o dashboard
+      navigate('/cliente/dashboard');
 
     } catch (err) {
-      setError(err.response?.data?.message || 'Erro ao criar agendamento.');
-      console.error(err);
+      console.error('Erro ao criar agendamento:', err);
+      setError(err.response?.data?.message || err.response?.data || 'Erro ao criar agendamento.');
     } finally {
       setSubmitting(false);
     }
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Carregando...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    );
   }
 
   if (error && !servico) {
-     return <div className="min-h-screen flex items-center justify-center text-red-500">{error}</div>;
+     return (
+       <div className="min-h-screen flex items-center justify-center">
+         <div className="text-center">
+           <p className="text-red-500 mb-4">{error}</p>
+           <Link to="/servicos" className="text-primary-600 hover:underline">Voltar aos serviços</Link>
+         </div>
+       </div>
+     );
   }
 
   return (
@@ -121,16 +148,24 @@ const Agendar = () => {
                 onChange={handleChange}
                 className="mt-1 input-field"
                 required
+                disabled={profissionais.length === 0}
               >
-                {profissionais.length === 0 && (
-                  <option value="" disabled>Nenhum profissional disponível para este serviço.</option>
+                {profissionais.length === 0 ? (
+                  <option value="">Nenhum profissional disponível para este serviço</option>
+                ) : (
+                  profissionais.map(p => (
+                    <option key={p.idUsuario} value={p.idUsuario}>
+                      {p.nome}
+                    </option>
+                  ))
                 )}
-                {profissionais.map(p => (
-                  <option key={p.idUsuario} value={p.idUsuario}>
-                    {p.nome}
-                  </option>
-                ))}
               </select>
+              {profissionais.length === 0 && (
+                <p className="mt-2 text-sm text-red-600">
+                  Nenhum profissional está disponível para este serviço no momento. 
+                  Entre em contato com a clínica.
+                </p>
+              )}
             </div>
 
             {/* Seleção de Data e Hora */}
@@ -146,7 +181,11 @@ const Agendar = () => {
                 onChange={handleChange}
                 className="mt-1 input-field"
                 required
+                min={new Date().toISOString().slice(0, 16)}
               />
+              <p className="mt-1 text-sm text-gray-500">
+                Horário de funcionamento: 8h às 18h
+              </p>
             </div>
 
             {/* Opção de Pagamento */}
@@ -165,7 +204,7 @@ const Agendar = () => {
                 <label htmlFor="pagamentoParcial" className="font-medium text-gray-700">
                   Pagar 50% agora (sinal)
                 </label>
-                <p className="text-gray-500">O restante será pago na clínica. (Regra do P1)</p>
+                <p className="text-gray-500">O restante será pago na clínica.</p>
               </div>
             </div>
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,14 +21,18 @@ public class Especialidade {
     private Long idEspecialidade;
     private String nome;
     private String descricao;
+
     @ManyToMany(mappedBy = "especialidades")
+    @JsonIgnore
     private List<Profissional> profissionais = new ArrayList<>();
+    
     @ManyToMany
     @JoinTable(
         name = "servico_especialidade", // Tabela de junção
         joinColumns = @JoinColumn(name = "especialidade_id"), // FK de Especialidade
         inverseJoinColumns = @JoinColumn(name = "servico_id") // FK de Servico
     )
+    @JsonIgnore
     private Set<Servico> servicos = new HashSet<>();
 
 

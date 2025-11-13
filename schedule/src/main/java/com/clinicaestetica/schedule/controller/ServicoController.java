@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
-import java.util.Set;
-
 import jakarta.validation.Valid;
 
 @RestController // Esta anotação diz ao Spring que esta classe é uma API que irá responder a requisições web.
@@ -52,9 +50,8 @@ public class ServicoController {
     }
 
     @GetMapping("/{id}/profissionais")
-    public ResponseEntity<Set<Profissional>> listarProfissionaisPorServico(@PathVariable Long id) {
-        // A exceção NoSuchElementException será capturada pelo GlobalExceptionHandler
-        Set<Profissional> profissionais = servicoService.getProfissionaisPorServico(id);
+    public ResponseEntity<List<Profissional>> listarProfissionaisPorServico(@PathVariable Long id) {
+        List<Profissional> profissionais = servicoService.getProfissionaisPorServico(id);
         return new ResponseEntity<>(profissionais, HttpStatus.OK);
     }
 }
