@@ -23,6 +23,7 @@ import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.model.Solicitacao;
 import com.clinicaestetica.schedule.model.Administrador;
 import com.clinicaestetica.schedule.model.Agendamento;
+import com.clinicaestetica.schedule.model.Especialidade;
 import com.clinicaestetica.schedule.service.AdministradorService;
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
 
@@ -170,5 +171,18 @@ public class AdministradorController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @PutMapping("/especialidades/{especialidadeId}/servicos/{servicoId}")
+    public ResponseEntity<Especialidade> associarServico(@PathVariable Long especialidadeId, @PathVariable Long servicoId) {
+        // A exceção NoSuchElementException será tratada pelo GlobalExceptionHandler
+        Especialidade especialidade = administradorService.associarServico(especialidadeId, servicoId);
+        return new ResponseEntity<>(especialidade, HttpStatus.OK);
+    }
+
+    @PutMapping("/especialidades/{especialidadeId}/profissionais/{profissionalId}")
+    public ResponseEntity<Especialidade> associarProfissional(@PathVariable Long especialidadeId, @PathVariable Long profissionalId) {
+        Especialidade especialidade = administradorService.associarProfissional(especialidadeId, profissionalId);
+        return new ResponseEntity<>(especialidade, HttpStatus.OK);
     }
 }

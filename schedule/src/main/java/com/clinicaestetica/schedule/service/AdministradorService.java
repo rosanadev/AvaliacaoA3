@@ -14,7 +14,9 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.clinicaestetica.schedule.model.Agendamento;
+import com.clinicaestetica.schedule.model.Especialidade;
 import com.clinicaestetica.schedule.repository.AgendamentoRepository;
+import com.clinicaestetica.schedule.repository.EspecialidadeRepository;
 import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
 import com.clinicaestetica.schedule.model.Servico;
@@ -31,6 +33,12 @@ import com.clinicaestetica.schedule.enums.StatusAgendamento;
 public class AdministradorService {
 
     @Autowired
+    private ServicoRepository servicoRepository;
+
+    @Autowired
+    private EspecialidadeRepository especialidadeRepository;
+
+    @Autowired
     private ProfissionalRepository profissionalRepository;
 
     @Autowired
@@ -42,8 +50,6 @@ public class AdministradorService {
     @Autowired
     private SolicitacaoRepository solicitacaoRepository;
 
-    @Autowired 
-    private ServicoRepository servicoRepository;
 
     public Profissional criarProfissional(Profissional profissional) {
         return profissionalRepository.save(profissional);
@@ -240,6 +246,28 @@ public class AdministradorService {
         }
         
         return agendamentos;
+    }
+
+    public Especialidade associarServico(Long especialidadeId, Long servicoId) {
+        Especialidade especialidade = especialidadeRepository.findById(especialidadeId)
+            .orElseThrow(() -> new NoSuchElementException("Especialidade não encontrada"));
+        
+        Servico servico = servicoRepository.findById(servicoId)
+            .orElseThrow(() -> new NoSuchElementException("Serviço não encontrado"));
+
+        especialidade.getServicos().add(servico); //
+        return especialidadeRepository.save(especialidade);
+    }
+
+    public Especialidade associarProfissional(Long especialidadeId, Long profissionalId) {
+        Especialidade especialidade = especialidadeRepository.findById(especialidadeId)
+            .orElseThrow(() -> new NoSuchElementException("Especialidade não encontrada"));
+        
+        Profissional profissional = profissionalRepository.findById(profissionalId)
+            .orElseThrow(() -> new NoSuchElementException("Profissional não encontrado"));
+
+        especialidade.getProfissionais().add(profissional); //
+        return especialidadeRepository.save(especialidade);
     }
 
 }
