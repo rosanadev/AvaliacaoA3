@@ -12,6 +12,7 @@ import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.repository.ProfissionalRepository;
 import com.clinicaestetica.schedule.model.Profissional;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
