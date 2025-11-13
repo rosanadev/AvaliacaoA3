@@ -9,6 +9,7 @@ import Servicos from './pages/Servicos';
 import Cadastro from './pages/Cadastro';
 import Agendar from './pages/Agendar';
 import ClienteDashboard from './pages/dashboard/ClienteDashboard';
+import AdminDashboard from './pages/dashboard/AdminDashboard';
 
 // Componente de Rota Privada
 const PrivateRoute = ({ children, tipoPermitido }) => {
@@ -123,14 +124,14 @@ function App() {
           />
 
           {/* Rotas do Admin */}
-          <Route
-            path="/admin/dashboard"
-            element={
-              <PrivateRoute tipoPermitido="admin">
-                <DashboardPlaceholder tipo="admin" />
-              </PrivateRoute>
-            }
-          />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <PrivateRoute tipoPermitido="admin">
+              <AdminDashboard /> {/* <--- TROQUE ESTA LINHA */}
+            </PrivateRoute>
+          }
+        />
 
           {/* Rota 404 */}
           <Route path="*" element={<Navigate to="/" />} />
