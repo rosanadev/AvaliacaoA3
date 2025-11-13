@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,6 +36,7 @@ public class Servico {
     private int duracao_em_minutos;
     @OneToMany(mappedBy = "servico")
     private List<Agendamento> agendamentos = new ArrayList<>();
+    @JsonIgnore
     @ManyToMany(mappedBy = "servicos")
     private Set<Especialidade> especialidades = new HashSet<>();
     

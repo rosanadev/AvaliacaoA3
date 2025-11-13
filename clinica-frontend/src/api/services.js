@@ -175,4 +175,29 @@ export const administradorAPI = {
     const response = await api.get(url);
     return response.data;
   },
+
+  associarServicoEspecialidade: async (especialidadeId, servicoId) => {
+    const response = await api.put(`/administrador/especialidades/${especialidadeId}/servicos/${servicoId}`);
+    return response.data;
+  },
+
+  associarProfissionalEspecialidade: async (especialidadeId, profissionalId) => {
+    const response = await api.put(`/administrador/especialidades/${especialidadeId}/profissionais/${profissionalId}`);
+    return response.data;
+  },
+
 };
+
+
+export const especialidadeAPI = {
+  criar: async (especialidade) => {
+    // espera um objeto { nome: "Nome da Especialidade" }
+    const response = await api.post('/especialidades', especialidade);
+    return response.data;
+  },
+  listar: async () => {
+    const response = await api.get('/especialidades');
+    return response.data;
+  },
+};
+

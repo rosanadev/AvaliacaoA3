@@ -175,14 +175,14 @@ public class AdministradorController {
 
     @PutMapping("/especialidades/{especialidadeId}/servicos/{servicoId}")
     public ResponseEntity<Especialidade> associarServico(@PathVariable Long especialidadeId, @PathVariable Long servicoId) {
-        // A exceção NoSuchElementException será tratada pelo GlobalExceptionHandler
         Especialidade especialidade = administradorService.associarServico(especialidadeId, servicoId);
         return new ResponseEntity<>(especialidade, HttpStatus.OK);
     }
 
+    // A rota agora é: /administrador + /especialidades/{id}/profissionais/{id}
     @PutMapping("/especialidades/{especialidadeId}/profissionais/{profissionalId}")
-    public ResponseEntity<Especialidade> associarProfissional(@PathVariable Long especialidadeId, @PathVariable Long profissionalId) {
-        Especialidade especialidade = administradorService.associarProfissional(especialidadeId, profissionalId);
-        return new ResponseEntity<>(especialidade, HttpStatus.OK);
+    public ResponseEntity<Profissional> associarProfissional(@PathVariable Long especialidadeId, @PathVariable Long profissionalId) {
+        Profissional profissional = administradorService.associarProfissional(especialidadeId, profissionalId);
+        return new ResponseEntity<>(profissional, HttpStatus.OK);
     }
 }

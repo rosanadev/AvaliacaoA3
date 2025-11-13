@@ -259,15 +259,16 @@ public class AdministradorService {
         return especialidadeRepository.save(especialidade);
     }
 
-    public Especialidade associarProfissional(Long especialidadeId, Long profissionalId) {
+    public Profissional associarProfissional(Long especialidadeId, Long profissionalId) {
         Especialidade especialidade = especialidadeRepository.findById(especialidadeId)
             .orElseThrow(() -> new NoSuchElementException("Especialidade não encontrada"));
         
         Profissional profissional = profissionalRepository.findById(profissionalId)
             .orElseThrow(() -> new NoSuchElementException("Profissional não encontrado"));
 
-        especialidade.getProfissionais().add(profissional); //
-        return especialidadeRepository.save(especialidade);
+        profissional.getEspecialidades().add(especialidade);
+        return profissionalRepository.save(profissional);
     }
+    
 
 }
