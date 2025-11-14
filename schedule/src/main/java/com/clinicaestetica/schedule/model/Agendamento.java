@@ -3,7 +3,6 @@ package com.clinicaestetica.schedule.model;
 import java.time.LocalDateTime;
 import java.util.Set;
 import com.clinicaestetica.schedule.enums.StatusAgendamento;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -39,12 +38,10 @@ public class Agendamento {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
-    @JsonBackReference(value = "cliente-agendamentos")
     private Cliente cliente;
 
     @ManyToOne
     @JoinColumn(name = "profissional_id", nullable = false)
-    @JsonBackReference(value = "profissional-agendamentos")
     private Profissional profissional;
 
     @ManyToOne

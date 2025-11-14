@@ -192,7 +192,6 @@ export const solicitacaoAPI = {
     const response = await api.post('/solicitacoes', solicitacaoDTO);
     return response.data;
   },
-
   reagendar: async (reagendamentoDTO) => {
     const response = await api.post('/solicitacoes/reagendamento', reagendamentoDTO);
     return response.data;

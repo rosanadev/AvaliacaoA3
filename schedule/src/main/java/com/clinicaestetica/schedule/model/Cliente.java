@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 public class Cliente extends Usuario {
-    @OneToMany(mappedBy = "cliente")
-    @JsonManagedReference(value = "cliente-agendamentos")
+
+    @OneToMany(mappedBy = "cliente", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Agendamento> agendamentos = new ArrayList<>();
 
     public Cliente() {
