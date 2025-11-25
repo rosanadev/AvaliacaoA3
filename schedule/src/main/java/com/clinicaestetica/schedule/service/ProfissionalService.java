@@ -1,4 +1,5 @@
 package com.clinicaestetica.schedule.service;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;

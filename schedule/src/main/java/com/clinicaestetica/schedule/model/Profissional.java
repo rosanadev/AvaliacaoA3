@@ -1,4 +1,5 @@
 package com.clinicaestetica.schedule.model;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,7 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Profissional extends Usuario {
@@ -16,20 +17,21 @@ public class Profissional extends Usuario {
 
     @ManyToMany
     @JoinTable(
-        name = "profissional_especialidade", // Nome da tabela de junção
-        joinColumns = @JoinColumn(name = "profissional_id"), // Chave estrangeira do Profissional
-        inverseJoinColumns = @JoinColumn(name = "especialidade_id") // Chave estrangeira da Especialidade
+        name = "profissional_especialidade", 
+        joinColumns = @JoinColumn(name = "profissional_id"), 
+        inverseJoinColumns = @JoinColumn(name = "especialidade_id") 
     )
-    private Set<Especialidade> especialidades = new HashSet<>(); // Use Set para manter a consistência
+    @JsonIgnore
+    private Set<Especialidade> especialidades = new HashSet<>(); 
 
     @OneToMany(mappedBy = "profissional")
-    @JsonManagedReference(value = "profissional-agendamentos")
+    @JsonIgnore
     private Set<Agendamento> agendamentos = new HashSet<>();
 
     @OneToMany(mappedBy = "profissional")
+    @JsonIgnore
     private Set<Solicitacao> solicitacoes = new HashSet<>();
 
-    // construtor vazio para JPA
     public Profissional() {
         super();
     }

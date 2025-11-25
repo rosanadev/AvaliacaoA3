@@ -8,6 +8,6 @@ import com.clinicaestetica.schedule.model.Profissional;
 @Repository
 public interface ProfissionalRepository extends JpaRepository<Profissional, Long>{
 
-    Optional<Profissional> findByEmail(String email); //além do email, encontrar a senha
+    Optional<Profissional> findByEmail(String email); 
 
 }

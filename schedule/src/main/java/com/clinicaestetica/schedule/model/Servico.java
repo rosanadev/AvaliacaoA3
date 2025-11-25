@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,25 +24,30 @@ public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank(message = "O nome do serviço não pode estar em branco")
     @Size(min = 3, max = 100, message = "O nome do serviço deve ter entre 3 e 100 caracteres")
     private String nome;
+
     @NotBlank(message = "A descrição do serviço não pode estar em branco")
     @Size(max = 500, message = "A descrição do serviço não pode exceder 500 caracteres")
     private String descricao;
+
     @NotNull(message = "O preço do serviço não pode ser nulo")
     @DecimalMin(value = "0.01", message = "O preço do serviço deve ser maior que zero")
     private BigDecimal preco;
+
     @Min(value = 1, message = "A duração do serviço deve ser de no mínimo 1 minuto")
     private int duracao_em_minutos;
-    @OneToMany(mappedBy = "servico")
+
+    @OneToMany(mappedBy = "servico", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Agendamento> agendamentos = new ArrayList<>();
+    
+    @JsonIgnore
     @ManyToMany(mappedBy = "servicos")
     private Set<Especialidade> especialidades = new HashSet<>();
     
-    public Servico(){ //Construtor vazio (obrigatório para a JPA)
-
-    }
+    public Servico(){}
 
     public Servico(String nome, String descricao, BigDecimal preco, int duracao_em_minutos){
         this.nome = nome;
@@ -48,9 +55,7 @@ public class Servico {
         this.preco = preco;
         this.duracao_em_minutos = duracao_em_minutos;
 
-    } // O ID não faz parte do construtor porque ele é gerado automaticamente pelo database
-
-    //Getters e setters
+    } 
 
     public Long getId() {
         return id;
@@ -92,5 +97,12 @@ public class Servico {
         this.duracao_em_minutos = duracao_em_minutos;
     }
 
-}
+    public Set<Especialidade> getEspecialidades() {
+        return especialidades;
+    }
+    
+    public void setEspecialidades(Set<Especialidade> especialidades) {
+        this.especialidades = especialidades;
+    }
 
+}

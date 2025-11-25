@@ -1,7 +1,7 @@
 package com.clinicaestetica.schedule.model;
 
 import java.math.BigDecimal;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +19,7 @@ public class Pagamento {
 
     @OneToOne
     @JoinColumn(name = "agendamento_id", nullable = false)
+    @JsonBackReference(value = "agendamento-pagamento")
     private Agendamento agendamento;
 
     public Pagamento() {}
