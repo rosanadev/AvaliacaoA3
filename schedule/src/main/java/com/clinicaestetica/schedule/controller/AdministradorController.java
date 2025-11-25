@@ -23,7 +23,9 @@ import com.clinicaestetica.schedule.model.Profissional;
 import com.clinicaestetica.schedule.model.Solicitacao;
 import com.clinicaestetica.schedule.model.Administrador;
 import com.clinicaestetica.schedule.model.Agendamento;
+import com.clinicaestetica.schedule.model.Especialidade;
 import com.clinicaestetica.schedule.service.AdministradorService;
+import jakarta.validation.Valid;
 import com.clinicaestetica.schedule.enums.StatusSolicitacao;
 
 @RestController
@@ -58,7 +60,7 @@ public class AdministradorController {
         }
     }
 
-    // NOVO: Calendário de um profissional específico
+    // Calendário de um profissional específico
     @GetMapping("/calendario/profissional/{profissionalId}")
     public ResponseEntity<List<Agendamento>> getCalendarioProfissional(
             @PathVariable Long profissionalId,
@@ -88,7 +90,7 @@ public class AdministradorController {
     }
 
     @PostMapping("/profissionais")
-    public ResponseEntity<Profissional> criarProfissional(@RequestBody Profissional profissional) {
+    public ResponseEntity<Profissional> criarProfissional(@Valid @RequestBody Profissional profissional) { // <<< ADICIONADO @Valid
         try {
             Profissional novoProfissional = administradorService.criarProfissional(profissional);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoProfissional);
@@ -141,7 +143,6 @@ public class AdministradorController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (IllegalArgumentException e) {
-            // Regra de negócio violada (ex: tentar mudar para PENDENTE, ou já foi processada)
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -170,5 +171,17 @@ public class AdministradorController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @PutMapping("/especialidades/{especialidadeId}/servicos/{servicoId}")
+    public ResponseEntity<Especialidade> associarServico(@PathVariable Long especialidadeId, @PathVariable Long servicoId) {
+        Especialidade especialidade = administradorService.associarServico(especialidadeId, servicoId);
+        return new ResponseEntity<>(especialidade, HttpStatus.OK);
+    }
+
+    @PutMapping("/especialidades/{especialidadeId}/profissionais/{profissionalId}")
+    public ResponseEntity<Profissional> associarProfissional(@PathVariable Long especialidadeId, @PathVariable Long profissionalId) {
+        Profissional profissional = administradorService.associarProfissional(especialidadeId, profissionalId);
+        return new ResponseEntity<>(profissional, HttpStatus.OK);
     }
 }
