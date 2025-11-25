@@ -37,7 +37,6 @@ public class ClienteController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> getCliente(@PathVariable Long id) {
-        // Agora o service lança a exceção, o ControllerAdvice a captura
         Cliente cliente = clienteService.getCliente(id);
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
@@ -54,7 +53,6 @@ public class ClienteController {
         } else if ("passados".equalsIgnoreCase(filtro)) {
             agendamentos = clienteService.getAgendamentosPassados(id);
         } else {
-            // Sem filtro: retorna todos
             agendamentos = clienteService.getAgendamentosDoCliente(id);
         }
         

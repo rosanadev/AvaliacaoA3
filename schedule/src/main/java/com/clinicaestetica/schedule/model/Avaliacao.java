@@ -35,21 +35,17 @@ public class Avaliacao {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente; // Adicione este campo
+    private Cliente cliente; 
 
-    // Construtor vazio (obrigatório para JPA)
     public Avaliacao() {
     }
 
-    // Construtor com todos os atributos
     public Avaliacao(int nota, String comentario, Agendamento agendamento, Cliente cliente) {
         this.nota = nota;
         this.comentario = comentario;
         this.agendamento = agendamento;
         this.cliente = cliente;
     }
-
-    // Getters e Setters
     
     public Long getId() {
         return id;
