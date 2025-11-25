@@ -3,7 +3,6 @@ package com.clinicaestetica.schedule.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.clinicaestetica.schedule.enums.StatusAgendamento;
 import com.clinicaestetica.schedule.model.Agendamento;
 import com.clinicaestetica.schedule.service.AgendamentoService;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -51,7 +48,6 @@ public class AgendamentoController {
         return new ResponseEntity<>(historico, HttpStatus.OK);
     }
 
-    // NOVO: Endpoint para agendamentos passados (concluídos ou cancelados)
     @GetMapping("/passados")
     public ResponseEntity<List<Agendamento>> listarAgendamentosPassados() {
         List<Agendamento> passados = agendamentoService.listarAgendamentosPassados();

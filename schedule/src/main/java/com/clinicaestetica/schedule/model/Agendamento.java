@@ -3,9 +3,10 @@ package com.clinicaestetica.schedule.model;
 import java.time.LocalDateTime;
 import java.util.Set;
 import com.clinicaestetica.schedule.enums.StatusAgendamento;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,22 +25,28 @@ public class Agendamento {
     private Long idAgendamento;
 
     private LocalDateTime dataHora;
+
+    @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
     private StatusAgendamento status;
+
     private LocalDateTime dataCancelamento;
-    private boolean pagamentoParcial; // novo campo para pagamento 50%
+
+    private boolean pagamentoParcial;
+
+    @OneToOne(mappedBy = "agendamento", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference(value = "agendamento-pagamento")
+    private Pagamento pagamento;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
-    @JsonBackReference(value = "cliente-agendamentos")
     private Cliente cliente;
 
     @ManyToOne
-    @JoinColumn(name = "profissional_id", nullable = false)
-    @JsonBackReference(value = "profissional-agendamentos")
+    @JoinColumn(name = "profissional_id", nullable = true) 
     private Profissional profissional;
 
     @ManyToOne
-    @JoinColumn(name = "servico_id", nullable = false)
+    @JoinColumn(name = "servico_id", nullable = true)
     private Servico servico;
 
     @ManyToMany
@@ -53,17 +60,14 @@ public class Agendamento {
     @OneToOne(mappedBy = "agendamento")
     private Avaliacao avaliacao;
 
-    @OneToOne(mappedBy = "agendamento")
-    private Pagamento pagamento;
-
     @OneToMany(mappedBy = "agendamento")
     @JsonManagedReference(value = "agendamento-solicitacoes")
     private Set<Solicitacao> solicitacoes;
 
-    // Construtor vazio (obrigatório para JPA
+    
     public Agendamento() {}
 
-    // Construtor com todos os atributos
+    
     public Agendamento(LocalDateTime dataHora, StatusAgendamento status, LocalDateTime dataCancelamento,
                        Cliente cliente, Profissional profissional, Servico servico) {
         this.dataHora = dataHora;
@@ -72,16 +76,14 @@ public class Agendamento {
         this.cliente = cliente;
         this.profissional = profissional;
         this.servico = servico;
-        this.pagamentoParcial = false; // pagamento integral
+        this.pagamentoParcial = false; 
     }
 
-    // Getters e Setters 
-
-    public Long getId() {
+    public Long getIdAgendamento() { 
         return idAgendamento;
     }
 
-    public void setId(Long idAgendamento) {
+    public void setIdAgendamento(Long idAgendamento) { 
         this.idAgendamento = idAgendamento;
     }
 
