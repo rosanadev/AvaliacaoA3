@@ -21,38 +21,39 @@ public class Solicitacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private TipoSolicitacaoAgendamento tipo; // Usando a enum que definimos
+    private TipoSolicitacaoAgendamento tipo; 
     
     private String descricao;
     @NotNull
     @Enumerated(EnumType.STRING)
-    private StatusSolicitacao status; // Ex: PENDENTE, APROVADA, RECUSADA
+    private StatusSolicitacao status;
+
     @NotNull
     private LocalDateTime dataCriacao;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "agendamento_id", nullable = false)
     @JsonBackReference(value = "agendamento-solicitacoes") 
     private Agendamento agendamento;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "profissional_id", nullable = false)
-    private Profissional profissional; // O atributo para a relação com Profissional
+    private Profissional profissional; 
 
     public Solicitacao() {
     }
 
-    // Construtor completo
     public Solicitacao(TipoSolicitacaoAgendamento tipo, String descricao, StatusSolicitacao status, Agendamento agendamento, Profissional profissional, LocalDateTime dataCriacao) {
         this.tipo = tipo;
         this.descricao = descricao;
         this.status = status;
         this.agendamento = agendamento;
         this.profissional = profissional;
-        this.dataCriacao = LocalDateTime.now(); // Define a data de criação como o momento atual
+        this.dataCriacao = LocalDateTime.now();
     }
     
-    // Getters e Setters
     public Long getId() {
         return id;
     }
