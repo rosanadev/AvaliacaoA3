@@ -20,16 +20,18 @@ public class Especialidade {
     private Long idEspecialidade;
     private String nome;
     private String descricao;
+
     @ManyToMany(mappedBy = "especialidades")
     private List<Profissional> profissionais = new ArrayList<>();
+    
     @ManyToMany
     @JoinTable(
-        name = "servico_especialidade", // Tabela de junção
-        joinColumns = @JoinColumn(name = "especialidade_id"), // FK de Especialidade
-        inverseJoinColumns = @JoinColumn(name = "servico_id") // FK de Servico
+        name = "servico_especialidade", 
+        joinColumns = @JoinColumn(name = "especialidade_id"), 
+        inverseJoinColumns = @JoinColumn(name = "servico_id") 
     )
-    private Set<Servico> servicos = new HashSet<>();
 
+    private Set<Servico> servicos = new HashSet<>();
 
     public Especialidade() {} 
 
