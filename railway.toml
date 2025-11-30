@@ -1,2 +1,4 @@
 [build]
-builder = "schedule/dockerfile"
+builder = "dockerfile"
+dockerfilePath = "schedule/Dockerfile"
+context = "schedule"
