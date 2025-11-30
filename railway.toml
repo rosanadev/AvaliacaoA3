@@ -1,9 +1,8 @@
 [build]
-  builder = "NIXPACKS"
+builder = "nixpacks"
+buildCommand = "./mvnw clean install -DskipTests"
+buildDir = "schedule"
 
-[deploy]
-  numReplicas = 1
-  restartPolicyType = "ON_FAILURE"
-
-[env]
-  PORT = "8080"
+[start]
+cmd = "java -jar target/*.jar"
+startDir = "schedule"
