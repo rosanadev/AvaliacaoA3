@@ -1,0 +1,9 @@
+[build]
+  builder = "NIXPACKS"
+
+[deploy]
+  numReplicas = 1
+  restartPolicyType = "ON_FAILURE"
+
+[env]
+  PORT = "8080"
