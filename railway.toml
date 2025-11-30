@@ -1,8 +1,2 @@
 [build]
-builder = "nixpacks"
-buildCommand = "./mvnw clean install -DskipTests"
-buildDir = "schedule/dockerfile"
-
-[start]
-cmd = "java -jar target/*.jar"
-startDir = "schedule"
+builder = "dockerfile"
