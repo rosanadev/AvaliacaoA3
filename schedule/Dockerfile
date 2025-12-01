@@ -21,15 +21,3 @@ EXPOSE 8080
 # Usa a variável PORT do Railway
 ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
 ```
-
-## 2. Verifique/Crie o arquivo `.dockerignore`
-
-Crie um arquivo `.dockerignore` na raiz do projeto:
-```
-target/
-.git/
-.gitignore
-*.md
-.env
-*.log
-.DS_Store
