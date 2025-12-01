@@ -8,9 +8,6 @@ COPY . .
 # Debug: mostra o que foi copiado
 RUN echo "=== Arquivos copiados ===" && ls -la
 
-# Build do projeto
-RUN mvn clean package -DskipTests
-
 # Run
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
