@@ -2,8 +2,11 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copia todos os arquivos do projeto
+# Copia todo o projeto
 COPY . .
+
+# Debug: lista arquivos copiados
+RUN ls -la && echo "=== Arquivos copiados ===" && ls -la /app
 
 # Build do projeto
 RUN mvn clean package -DskipTests
@@ -15,8 +18,8 @@ WORKDIR /app
 # Copia o JAR gerado
 COPY --from=build /app/target/*.jar app.jar
 
-# Expõe a porta (Railway usa a variável PORT)
+# Expõe a porta
 EXPOSE 8080
 
-# Usa a variável PORT do Railway
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
+# Comando de inicialização
+ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -jar app.jar"]
