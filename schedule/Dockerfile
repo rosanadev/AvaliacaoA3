@@ -1,18 +1,21 @@
 # Build
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copia todo o projeto
-COPY . .
+# Copia o POM
+COPY pom.xml .
 
-# Debug: lista arquivos copiados
-RUN ls -la && echo "=== Arquivos copiados ===" && ls -la /app
+# Baixa as dependências (cria layer de cache)
+RUN mvn dependency:go-offline -B || true
+
+# Copia o código fonte
+COPY src ./src
 
 # Build do projeto
 RUN mvn clean package -DskipTests
 
 # Run
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
 # Copia o JAR gerado
