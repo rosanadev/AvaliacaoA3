@@ -20,4 +20,3 @@ EXPOSE 8080
 
 # Usa a variável PORT do Railway
 ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
-```
