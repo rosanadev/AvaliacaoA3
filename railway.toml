@@ -1,4 +1,7 @@
 [build]
 builder = "dockerfile"
-dockerfilePath = "schedule/"
+dockerfilePath = "schedule/Dockerfile"
 context = "schedule"
+
+[start]
+cmd = "java -jar app.jar"
