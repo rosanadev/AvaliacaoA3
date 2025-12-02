@@ -1,4 +1,4 @@
-package com.clinicaestetica.schedule.config;
+package schedule.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
