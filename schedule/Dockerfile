@@ -1,4 +1,4 @@
-FROM maven:3.9-amazoncorretto-17 AS builder
+FROM maven:3.9.6-eclipse-temurin-17
 WORKDIR /app
 
 # Caminho correto usando subpasta schedule
