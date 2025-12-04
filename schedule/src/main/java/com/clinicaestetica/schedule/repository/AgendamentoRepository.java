@@ -19,6 +19,12 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
             StatusAgendamento statusIgnorar
     );
 
+    boolean existsByProfissionalIdUsuarioAndDataHoraAndStatusNot(
+        Long profissionalId,
+        LocalDateTime dataHora,
+        StatusAgendamento statusIgnorar
+    );
+
     @Query("SELECT a FROM Agendamento a WHERE a.cliente.idUsuario = :clienteId AND a.dataHora > :dataAtual ORDER BY a.dataHora ASC")
     List<Agendamento> findAgendamentosFuturos(@Param("clienteId") Long clienteId, @Param("dataAtual") LocalDateTime dataAtual);
 

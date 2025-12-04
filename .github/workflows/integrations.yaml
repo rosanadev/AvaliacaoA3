@@ -9,16 +9,6 @@ on:
 jobs:
   integration-test:
     runs-on: ubuntu-latest
-    
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: sigra01
-          MYSQL_DATABASE: clinica_estetica
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout code
@@ -27,22 +17,10 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'maven'
+          java-version: 17
+          distribution: temurin
+          cache: maven
 
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Run integration tests
+      - name: Run tests
         working-directory: ./schedule
-        run: mvn -B clean verify
-        env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/clinica_estetica
-          SPRING_DATASOURCE_USERNAME: root
-          SPRING_DATASOURCE_PASSWORD: sigra01
-          SERVER_PORT: 8080
+        run: mvn -B clean verify -Dspring.profiles.active=test
