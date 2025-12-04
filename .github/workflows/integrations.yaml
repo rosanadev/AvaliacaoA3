@@ -2,7 +2,7 @@ name: Integration Tests
 
 on:
   push:
-    branches: [ master, grazidev, rosana, Evely, caio, vicc, frontend, testes ]
+    branches: [ master, grazidev, rosana, Evely, caio, vicc, frontend, testes]
   pull_request:
     branches: [ master ]
 
@@ -36,7 +36,7 @@ jobs:
   integration-tests:
     name: Integration Tests (MySQL)
     runs-on: ubuntu-latest
-    needs: unit-tests  # Roda só se os unitários passarem
+    needs: unit-tests 
 
     services:
       mysql:
@@ -82,7 +82,7 @@ jobs:
 
       - name: Run Integration Tests
         working-directory: ./schedule
-        run: mvn -B verify -Dspring.profiles.active=ci -DskipUnitTests=true
+        run: mvn -B verify -Dspring.profiles.active=integration -DskipUnitTests=true
 
       - name: Upload Integration Test Reports
         if: always()
