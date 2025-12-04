@@ -24,16 +24,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * TESTES DE INTEGRAÇÃO - AgendamentoService
- * 
- * Diferenças dos testes unitários:
- * - Usa banco MySQL REAL (não H2 em memória)
- * - NÃO usa mocks - testa integração real entre camadas
- * - Testa relacionamentos JPA (FK, cascade, etc)
- * - Testa constraints do banco
- * - @Transactional faz rollback após cada teste (banco limpo)
- */
 @SpringBootTest
 @ActiveProfiles("integration")
 @Transactional
@@ -58,19 +48,14 @@ public class AgendamentoIntegrationTest {
     private Profissional profissional;
     private Servico servico;
 
-    /**
-     * Setup executado ANTES de cada teste
-     * Cria dados base necessários
-     */
     @BeforeEach
     void setup() {
-        // Limpa banco antes de cada teste
+
         agendamentoRepository.deleteAll();
         clienteRepository.deleteAll();
         profissionalRepository.deleteAll();
         servicoRepository.deleteAll();
 
-        // Cria Cliente
         cliente = new Cliente(
             "Cliente Teste Integração",
             "12345678901",
@@ -86,7 +71,7 @@ public class AgendamentoIntegrationTest {
         );
         cliente = clienteRepository.save(cliente);
 
-        // Cria Profissional
+
         profissional = new Profissional(
             "Profissional Teste Integração",
             "98765432100",
@@ -104,7 +89,7 @@ public class AgendamentoIntegrationTest {
         );
         profissional = profissionalRepository.save(profissional);
 
-        // Cria Serviço
+
         servico = new Servico(
             "Massagem Relaxante",
             "Massagem completa de 60 minutos",
@@ -119,30 +104,29 @@ public class AgendamentoIntegrationTest {
         System.out.println("Serviço ID: " + servico.getId());
     }
 
-    /**
-     * TESTE 1: Agendar serviço com sucesso
-     * Testa: INSERT no banco + relacionamentos FK
-     */
+
     @Test
     void testAgendarServicoComSucesso() {
         System.out.println("\n>>> TESTE: Agendar Serviço com Sucesso");
 
-        // Arrange
+
+        LocalDateTime dataHoraValida = LocalDateTime.now().plusDays(2).withHour(10).withMinute(0).withSecond(0);
+        
         Agendamento novoAgendamento = new Agendamento();
-        novoAgendamento.setDataHora(LocalDateTime.now().plusDays(2));
+        novoAgendamento.setDataHora(dataHoraValida);
         novoAgendamento.setCliente(cliente);
         novoAgendamento.setProfissional(profissional);
         novoAgendamento.setServico(servico);
         novoAgendamento.setPagamentoParcial(false);
 
-        // Act
+
         Agendamento salvo = agendamentoService.agendarServico(novoAgendamento);
 
-        // Assert - Verifica se salvou
+
         assertNotNull(salvo.getIdAgendamento());
         assertEquals(StatusAgendamento.AGENDADO, salvo.getStatus());
 
-        // Assert - Busca do banco para confirmar persistência
+
         Agendamento doBanco = agendamentoRepository.findById(salvo.getIdAgendamento())
             .orElseThrow(() -> new AssertionError("Agendamento não foi salvo no banco!"));
 
@@ -154,26 +138,25 @@ public class AgendamentoIntegrationTest {
         System.out.println("✅ Agendamento salvo com ID: " + salvo.getIdAgendamento());
     }
 
-    /**
-     * TESTE 2: Agendar com pagamento parcial
-     * Testa: Cálculo de pagamento + cascade save
-     */
+
     @Test
     void testAgendarComPagamentoParcial() {
         System.out.println("\n>>> TESTE: Agendar com Pagamento Parcial");
 
-        // Arrange
+
+        LocalDateTime dataHoraValida = LocalDateTime.now().plusDays(3).withHour(14).withMinute(0).withSecond(0);
+        
         Agendamento agendamento = new Agendamento();
-        agendamento.setDataHora(LocalDateTime.now().plusDays(3));
+        agendamento.setDataHora(dataHoraValida);
         agendamento.setCliente(cliente);
         agendamento.setProfissional(profissional);
         agendamento.setServico(servico);
         agendamento.setPagamentoParcial(true);
 
-        // Act
+
         Agendamento salvo = agendamentoService.agendarServico(agendamento);
 
-        // Assert - Verifica pagamento parcial (50%)
+
         assertNotNull(salvo.getPagamento());
         BigDecimal valorEsperado = servico.getPreco().divide(new BigDecimal("2"));
         assertEquals(0, valorEsperado.compareTo(salvo.getPagamento().getValor()));
@@ -181,16 +164,13 @@ public class AgendamentoIntegrationTest {
         System.out.println("✅ Pagamento parcial: " + salvo.getPagamento().getValor());
     }
 
-    /**
-     * TESTE 3: Tentativa de agendar horário já ocupado
-     * Testa: Constraint de horário único por profissional
-     */
+
     @Test
     void testAgendarHorarioConflito() {
         System.out.println("\n>>> TESTE: Conflito de Horário");
 
-        // Arrange - Primeiro agendamento
-        LocalDateTime dataHora = LocalDateTime.now().plusDays(5).withHour(10).withMinute(0);
+
+        LocalDateTime dataHora = LocalDateTime.now().plusDays(5).withHour(10).withMinute(0).withSecond(0);
 
         Agendamento primeiro = new Agendamento();
         primeiro.setDataHora(dataHora);
@@ -200,7 +180,7 @@ public class AgendamentoIntegrationTest {
         primeiro.setPagamentoParcial(false);
         agendamentoService.agendarServico(primeiro);
 
-        // Arrange - Segundo agendamento (MESMO horário e profissional)
+
         Agendamento segundo = new Agendamento();
         segundo.setDataHora(dataHora);
         segundo.setCliente(cliente);
@@ -208,7 +188,6 @@ public class AgendamentoIntegrationTest {
         segundo.setServico(servico);
         segundo.setPagamentoParcial(false);
 
-        // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             agendamentoService.agendarServico(segundo);
         });
@@ -217,30 +196,29 @@ public class AgendamentoIntegrationTest {
         System.out.println("✅ Conflito detectado corretamente: " + exception.getMessage());
     }
 
-    /**
-     * TESTE 4: Cancelar agendamento
-     * Testa: UPDATE status + data cancelamento
-     */
+
     @Test
     void testCancelarAgendamento() {
         System.out.println("\n>>> TESTE: Cancelar Agendamento");
 
-        // Arrange - Cria agendamento
+
+        LocalDateTime dataHoraValida = LocalDateTime.now().plusDays(10).withHour(10).withMinute(0).withSecond(0);
+        
         Agendamento agendamento = new Agendamento();
-        agendamento.setDataHora(LocalDateTime.now().plusDays(10));
+        agendamento.setDataHora(dataHoraValida);
         agendamento.setCliente(cliente);
         agendamento.setProfissional(profissional);
         agendamento.setServico(servico);
         agendamento.setPagamentoParcial(false);
         Agendamento salvo = agendamentoService.agendarServico(agendamento);
 
-        // Act
+
         boolean cancelado = agendamentoService.cancelarAgendamento(salvo.getIdAgendamento());
 
-        // Assert
+
         assertTrue(cancelado);
 
-        // Verifica no banco
+
         Agendamento atualizado = agendamentoRepository.findById(salvo.getIdAgendamento())
             .orElseThrow();
 
@@ -250,16 +228,13 @@ public class AgendamentoIntegrationTest {
         System.out.println("✅ Agendamento cancelado em: " + atualizado.getDataCancelamento());
     }
 
-    /**
-     * TESTE 5: Reagendar agendamento
-     * Testa: UPDATE data + status ALTERADO
-     */
     @Test
     void testReagendarAgendamento() {
         System.out.println("\n>>> TESTE: Reagendar Agendamento");
 
-        // Arrange - Cria agendamento
-        LocalDateTime dataOriginal = LocalDateTime.now().plusDays(7);
+
+        LocalDateTime dataOriginal = LocalDateTime.now().plusDays(7).withHour(10).withMinute(0).withSecond(0);
+        
         Agendamento agendamento = new Agendamento();
         agendamento.setDataHora(dataOriginal);
         agendamento.setCliente(cliente);
@@ -268,18 +243,16 @@ public class AgendamentoIntegrationTest {
         agendamento.setPagamentoParcial(false);
         Agendamento salvo = agendamentoService.agendarServico(agendamento);
 
-        // Act
-        LocalDateTime novaData = LocalDateTime.now().plusDays(10);
+        LocalDateTime novaData = LocalDateTime.now().plusDays(10).withHour(14).withMinute(0).withSecond(0);
         Agendamento reagendado = agendamentoService.reagendarAgendamento(
             salvo.getIdAgendamento(), 
             novaData
         );
 
-        // Assert
+
         assertEquals(novaData, reagendado.getDataHora());
         assertEquals(StatusAgendamento.ALTERADO, reagendado.getStatus());
 
-        // Verifica persistência
         Agendamento doBanco = agendamentoRepository.findById(salvo.getIdAgendamento())
             .orElseThrow();
         assertEquals(novaData, doBanco.getDataHora());
@@ -287,18 +260,20 @@ public class AgendamentoIntegrationTest {
         System.out.println("✅ Reagendado de " + dataOriginal + " para " + novaData);
     }
 
-    /**
-     * TESTE 6: Listar todos os agendamentos
-     * Testa: SELECT * + lazy loading de relacionamentos
-     */
     @Test
     void testListarTodosAgendamentos() {
         System.out.println("\n>>> TESTE: Listar Todos os Agendamentos");
 
-        // Arrange - Cria 3 agendamentos
+        int[] horas = {9, 11, 15}; 
+        
         for (int i = 0; i < 3; i++) {
+            LocalDateTime dataHoraValida = LocalDateTime.now().plusDays(i + 1)
+                .withHour(horas[i])
+                .withMinute(0)
+                .withSecond(0);
+            
             Agendamento ag = new Agendamento();
-            ag.setDataHora(LocalDateTime.now().plusDays(i + 1));
+            ag.setDataHora(dataHoraValida);
             ag.setCliente(cliente);
             ag.setProfissional(profissional);
             ag.setServico(servico);
@@ -306,13 +281,12 @@ public class AgendamentoIntegrationTest {
             agendamentoService.agendarServico(ag);
         }
 
-        // Act
         List<Agendamento> todos = agendamentoService.listarAgendamentos();
 
-        // Assert
+
         assertEquals(3, todos.size());
 
-        // Verifica se relacionamentos foram carregados
+
         for (Agendamento ag : todos) {
             assertNotNull(ag.getCliente());
             assertNotNull(ag.getProfissional());
@@ -324,27 +298,24 @@ public class AgendamentoIntegrationTest {
         System.out.println("✅ Total de agendamentos: " + todos.size());
     }
 
-    /**
-     * TESTE 7: Deletar cliente deve falhar se tiver agendamento
-     * Testa: Constraint FK + integridade referencial
-     */
+
     @Test
     void testIntegridadeReferencialCliente() {
         System.out.println("\n>>> TESTE: Integridade Referencial - Cliente");
 
-        // Arrange - Cria agendamento
+        LocalDateTime dataHoraValida = LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0);
+        
         Agendamento agendamento = new Agendamento();
-        agendamento.setDataHora(LocalDateTime.now().plusDays(1));
+        agendamento.setDataHora(dataHoraValida);
         agendamento.setCliente(cliente);
         agendamento.setProfissional(profissional);
         agendamento.setServico(servico);
         agendamento.setPagamentoParcial(false);
         agendamentoService.agendarServico(agendamento);
 
-        // Act & Assert - Tentar deletar cliente deve falhar
         assertThrows(Exception.class, () -> {
             clienteRepository.deleteById(cliente.getIdUsuario());
-            clienteRepository.flush(); // Força execução no banco
+            clienteRepository.flush(); 
         });
 
         System.out.println("✅ Constraint FK impediu delete de cliente com agendamento");

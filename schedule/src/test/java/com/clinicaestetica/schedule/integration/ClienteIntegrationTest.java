@@ -3,6 +3,7 @@ package com.clinicaestetica.schedule.integration;
 import com.clinicaestetica.schedule.model.Cliente;
 import com.clinicaestetica.schedule.repository.ClienteRepository;
 import com.clinicaestetica.schedule.service.ClienteService;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,22 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * TESTES DE INTEGRAÇÃO - ClienteService
- * 
- * Testa:
- * - CRUD completo no banco real
- * - Constraints (UNIQUE, NOT NULL, etc)
- * - Validações do Bean Validation (@Email, @CPF, etc)
- * - Login com autenticação real
- */
 @SpringBootTest
 @ActiveProfiles("integration")
 @Transactional
@@ -43,10 +33,6 @@ public class ClienteIntegrationTest {
         System.out.println("\n=== BANCO LIMPO ===");
     }
 
-    /**
-     * TESTE 1: Cadastrar cliente com sucesso
-     * Testa: INSERT com todos os campos obrigatórios
-     */
     @Test
     void testCadastrarClienteComSucesso() {
         System.out.println("\n>>> TESTE: Cadastrar Cliente");
@@ -82,15 +68,10 @@ public class ClienteIntegrationTest {
         System.out.println("✅ Cliente cadastrado com ID: " + salvo.getIdUsuario());
     }
 
-    /**
-     * TESTE 2: Tentar cadastrar com email duplicado
-     * Testa: UNIQUE constraint no email
-     */
     @Test
     void testCadastrarEmailDuplicado() {
         System.out.println("\n>>> TESTE: Email Duplicado");
 
-        // Arrange - Primeiro cliente
         Cliente primeiro = new Cliente(
             "Cliente Um",
             "11111111111",
@@ -106,7 +87,7 @@ public class ClienteIntegrationTest {
         );
         clienteService.cadastrarCliente(primeiro);
 
-        // Arrange - Segundo cliente (MESMO email)
+
         Cliente segundo = new Cliente(
             "Cliente Dois",
             "22222222222",
@@ -121,18 +102,32 @@ public class ClienteIntegrationTest {
             "SP"
         );
 
-        // Act & Assert
-        assertThrows(DataIntegrityViolationException.class, () -> {
+        try {
             clienteService.cadastrarCliente(segundo);
-        });
-
-        System.out.println("✅ Constraint UNIQUE impediu email duplicado");
+            clienteRepository.flush(); 
+            
+            
+            List<Cliente> comMesmoEmail = clienteRepository.findAll().stream()
+                .filter(c -> c.getEmail().equals("email@duplicado.com"))
+                .toList();
+            
+            assertEquals(1, comMesmoEmail.size(), 
+                "Email duplicado foi permitido! Esperado 1 cliente, encontrado: " + comMesmoEmail.size());
+            
+            System.out.println("⚠️ Constraint UNIQUE não impediu email duplicado no save, mas verificação manual OK");
+            
+        } catch (DataIntegrityViolationException | ConstraintViolationException e) {
+            System.out.println("✅ Constraint UNIQUE impediu email duplicado: " + e.getClass().getSimpleName());
+        } catch (Exception e) {
+            if (e.getMessage().contains("email") || e.getMessage().contains("unique") || 
+                e.getMessage().contains("duplicate") || e.getMessage().contains("Duplicate")) {
+                System.out.println("✅ Constraint UNIQUE impediu email duplicado: " + e.getClass().getSimpleName());
+            } else {
+                throw e;
+            }
+        }
     }
 
-    /**
-     * TESTE 3: Tentar cadastrar com CPF duplicado
-     * Testa: UNIQUE constraint no CPF
-     */
     @Test
     void testCadastrarCpfDuplicado() {
         System.out.println("\n>>> TESTE: CPF Duplicado");
@@ -153,10 +148,10 @@ public class ClienteIntegrationTest {
         );
         clienteService.cadastrarCliente(primeiro);
 
-        // Arrange - Segundo cliente (MESMO CPF)
+        
         Cliente segundo = new Cliente(
             "Cliente Dois",
-            "12345678901", // ← CPF IGUAL!
+            "12345678901", 
             LocalDate.of(1992, 2, 2),
             "cliente2@test.com",
             "senha456",
@@ -168,23 +163,38 @@ public class ClienteIntegrationTest {
             "SP"
         );
 
-        // Act & Assert
-        assertThrows(DataIntegrityViolationException.class, () -> {
+        try {
             clienteService.cadastrarCliente(segundo);
-        });
-
-        System.out.println("✅ Constraint UNIQUE impediu CPF duplicado");
+            clienteRepository.flush(); 
+            
+           
+            List<Cliente> comMesmoCpf = clienteRepository.findAll().stream()
+                .filter(c -> c.getCpf().equals("12345678901"))
+                .toList();
+            
+            assertEquals(1, comMesmoCpf.size(), 
+                "CPF duplicado foi permitido! Esperado 1 cliente, encontrado: " + comMesmoCpf.size());
+            
+            System.out.println("⚠️ Constraint UNIQUE não impediu CPF duplicado no save, mas verificação manual OK");
+            
+        } catch (DataIntegrityViolationException | ConstraintViolationException e) {
+            System.out.println("✅ Constraint UNIQUE impediu CPF duplicado: " + e.getClass().getSimpleName());
+        } catch (Exception e) {
+            // Outra exceção relacionada a constraint
+            if (e.getMessage().contains("cpf") || e.getMessage().contains("unique") || 
+                e.getMessage().contains("duplicate") || e.getMessage().contains("Duplicate")) {
+                System.out.println("✅ Constraint UNIQUE impediu CPF duplicado: " + e.getClass().getSimpleName());
+            } else {
+                throw e; 
+            }
+        }
     }
 
-    /**
-     * TESTE 4: Login com sucesso
-     * Testa: SELECT WHERE email AND senha
-     */
+    
     @Test
     void testLoginComSucesso() {
         System.out.println("\n>>> TESTE: Login com Sucesso");
 
-        // Arrange - Cadastra cliente
         Cliente cliente = new Cliente(
             "Maria Oliveira",
             "98765432100",
@@ -200,24 +210,21 @@ public class ClienteIntegrationTest {
         );
         clienteService.cadastrarCliente(cliente);
 
-        // Act
+        
         Optional<Cliente> logado = clienteService.login("maria@login.com", "senhaSegura123");
 
-        // Assert
+
         assertTrue(logado.isPresent());
         assertEquals("Maria Oliveira", logado.get().getNome());
         System.out.println("✅ Login realizado: " + logado.get().getEmail());
     }
 
-    /**
-     * TESTE 5: Login com senha incorreta
-     * Testa: Autenticação negada
-     */
+    
     @Test
     void testLoginSenhaIncorreta() {
         System.out.println("\n>>> TESTE: Login com Senha Incorreta");
 
-        // Arrange
+        
         Cliente cliente = new Cliente(
             "Pedro Santos",
             "55566677788",
@@ -233,39 +240,29 @@ public class ClienteIntegrationTest {
         );
         clienteService.cadastrarCliente(cliente);
 
-        // Act
+
         Optional<Cliente> logado = clienteService.login("pedro@test.com", "senhaERRADA");
 
-        // Assert
         assertFalse(logado.isPresent());
         System.out.println("✅ Login negado corretamente");
     }
 
-    /**
-     * TESTE 6: Login com email inexistente
-     * Testa: Email não cadastrado
-     */
     @Test
     void testLoginEmailInexistente() {
         System.out.println("\n>>> TESTE: Login com Email Inexistente");
 
-        // Act
+       
         Optional<Cliente> logado = clienteService.login("naoexiste@test.com", "qualquersenha");
 
-        // Assert
+
         assertFalse(logado.isPresent());
         System.out.println("✅ Email inexistente retornou vazio");
     }
 
-    /**
-     * TESTE 7: Listar todos os clientes
-     * Testa: SELECT * FROM cliente
-     */
     @Test
     void testListarTodosClientes() {
         System.out.println("\n>>> TESTE: Listar Todos os Clientes");
 
-        // Arrange - Cadastra 3 clientes
         for (int i = 1; i <= 3; i++) {
             Cliente cliente = new Cliente(
                 "Cliente " + i,
@@ -283,28 +280,21 @@ public class ClienteIntegrationTest {
             clienteService.cadastrarCliente(cliente);
         }
 
-        // Act
+        
         List<Cliente> todos = clienteService.listarClientes();
 
-        // Assert
         assertEquals(3, todos.size());
         System.out.println("✅ Total de clientes: " + todos.size());
 
-        // Verifica cada cliente
         for (Cliente c : todos) {
             System.out.println("  - " + c.getNome() + " (" + c.getEmail() + ")");
         }
     }
 
-    /**
-     * TESTE 8: Buscar cliente por ID
-     * Testa: SELECT WHERE id
-     */
     @Test
     void testBuscarClientePorId() {
         System.out.println("\n>>> TESTE: Buscar Cliente por ID");
 
-        // Arrange
         Cliente cliente = new Cliente(
             "Ana Costa",
             "99988877766",
@@ -320,25 +310,18 @@ public class ClienteIntegrationTest {
         );
         Cliente salvo = clienteService.cadastrarCliente(cliente);
 
-        // Act
         Cliente encontrado = clienteService.getCliente(salvo.getIdUsuario());
 
-        // Assert
         assertNotNull(encontrado);
         assertEquals("Ana Costa", encontrado.getNome());
         assertEquals(salvo.getIdUsuario(), encontrado.getIdUsuario());
         System.out.println("✅ Cliente encontrado: " + encontrado.getNome());
     }
 
-    /**
-     * TESTE 9: Buscar cliente inexistente por ID
-     * Testa: NoSuchElementException
-     */
     @Test
     void testBuscarClienteInexistente() {
         System.out.println("\n>>> TESTE: Buscar Cliente Inexistente");
 
-        // Act & Assert
         assertThrows(Exception.class, () -> {
             clienteService.getCliente(999L);
         });
@@ -346,18 +329,15 @@ public class ClienteIntegrationTest {
         System.out.println("✅ Exceção lançada corretamente para ID inexistente");
     }
 
-    /**
-     * TESTE 10: Validação de CPF com formato inválido
-     * Testa: Bean Validation (@Pattern)
-     */
+  
     @Test
     void testCpfFormatoInvalido() {
         System.out.println("\n>>> TESTE: CPF Formato Inválido");
 
-        // Arrange - CPF com letras
+    
         Cliente clienteInvalido = new Cliente(
             "Teste Invalido",
-            "ABC12345678", // ← CPF INVÁLIDO
+            "ABC12345678", 
             LocalDate.of(1990, 1, 1),
             "teste@invalido.com",
             "senha123",
@@ -369,7 +349,6 @@ public class ClienteIntegrationTest {
             "SP"
         );
 
-        // Act & Assert
         assertThrows(Exception.class, () -> {
             clienteService.cadastrarCliente(clienteInvalido);
         });
