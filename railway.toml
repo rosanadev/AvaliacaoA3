@@ -1,9 +1,7 @@
 [build]
-  builder = "NIXPACKS"
+builder = "dockerfile"
+dockerfilePath = "schedule/Dockerfile"
+context = "schedule"
 
-[deploy]
-  numReplicas = 1
-  restartPolicyType = "ON_FAILURE"
-
-[env]
-  PORT = "8080"
+[start]
+cmd = "java -jar app.jar"
