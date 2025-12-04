@@ -3,6 +3,7 @@ package com.clinicaestetica.schedule.model;
 import java.time.LocalDate;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,18 +23,20 @@ public abstract class Usuario {
     @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
     protected String nome;
 
+    @NotBlank(message = "O email não pode estar em branco")
+    @Email(message = "Formato de email inválido")
+    @Size(max = 100, message = "O email não pode exceder 100 caracteres")
+    @Column(unique = true)  
+    protected String email;
+
     @NotBlank(message = "O CPF não pode estar em branco")
     @Pattern(regexp = "\\d{11}", message = "O CPF deve conter 11 dígitos numéricos")
+    @Column(unique = true)  
     protected String cpf;
 
     @NotNull(message = "A data de nascimento não pode ser nula")
     @Past(message = "A data de nascimento deve ser no passado")
     protected LocalDate data_nascimento;
-
-    @NotBlank(message = "O email não pode estar em branco")
-    @Email(message = "Formato de email inválido")
-    @Size(max = 100, message = "O email não pode exceder 100 caracteres")
-    protected String email;
 
     @NotBlank(message = "A senha não pode estar em branco")
     @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
